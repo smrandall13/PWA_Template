@@ -1,0 +1,73 @@
+/* Core CSS - Reset and Base Styles */
+
+/* Default Link Styles */
+a {
+	color: var(--color-accent);
+	text-decoration: none;
+	transition: color 0.3s ease-in-out;
+}
+
+a:hover {
+	color: var(--color-highlight);
+}
+
+/* Default Button Styles */
+button {
+	background: var(--button-back);
+	color: var(--color-text);
+	border: none;
+	padding: var(--button-padding);
+	font-size: var(--button-font-size);
+	border-radius: var(--border-radius);
+	cursor: pointer;
+	transition: background 0.3s ease-in-out;
+}
+
+button:hover {
+	background: var(--button-hover-back);
+}
+
+/* Utility Classes */
+.container {
+	width: var(--container-width);
+	max-width: var(--container-max);
+	margin: 0 auto;
+}
+
+.text-center {
+	text-align: center;
+}
+
+/* Header Styles */
+header {
+	background-color: var(--primary-back);
+	color: var(--primary-text);
+	padding: 16px;
+	text-align: center;
+	border-bottom: 4px solid var(--color-accent);
+}
+
+header h1 {
+	margin: 0;
+	padding: 8px 0;
+	font-size: 24px;
+}
+
+header nav {
+	display: flex;
+	justify-content: center;
+	gap: 12px;
+	padding-top: 8px;
+}
+
+header nav a {
+	color: var(--color-text);
+	padding: 4px 8px;
+	border-radius: 4px;
+	transition: background 0.3s ease-in-out;
+}
+
+header nav a:hover {
+	background-color: var(--color-accent);
+	color: var(--primary-back);
+}

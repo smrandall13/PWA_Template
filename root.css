@@ -1,0 +1,107 @@
+/* Import Playful Yet Readable Font */
+@font-face {
+	font-family: 'Playfair';
+	src: url('/assets/fonts/Playfair.ttf') format('truetype');
+	font-weight: 400;
+	font-style: normal;
+}
+@font-face {
+	font-family: 'Nunito';
+	src: url('/assets/fonts/Nunito.ttf') format('truetype');
+	font-weight: 400;
+	font-style: normal;
+}
+@font-face {
+	font-family: 'Courier Prime';
+	src: url('/assets/fonts/CourierPrime.ttf') format('truetype');
+	font-weight: 400;
+	font-style: normal;
+}
+@font-face {
+	font-family: 'Roboto';
+	src: url('/assets/fonts/Roboto.ttf') format('truetype');
+	font-weight: 400;
+	font-style: normal;
+}
+
+:root {
+	/* Color Palette */
+	--primary-back: #121c2d;
+	--primary-text: #eaeaea;
+
+	--secondary-back: #1e2a3a;
+
+	--color-accent: #00a878;
+	--color-highlight: #ffc700;
+	--color-line: #0678ff;
+	--color-text: #eaeaea;
+
+	--color-muted: #a0a0a0;
+
+	--button-back: var(--color-accent);
+	--button-hover-back: #008f6b;
+
+	/* Typography */
+	--font-family: 'Nunito', sans-serif;
+	--font-size-base: 1rem;
+	--font-size-lg: 1.25rem;
+	--font-size-sm: 0.875rem;
+	--line-height: 1.5;
+
+	/* Spacing */
+	--spacing-xs: 0.5rem;
+	--spacing-sm: 1rem;
+	--spacing-md: 1.5rem;
+	--spacing-lg: 2rem;
+
+	/* Borders & Radius */
+	--border-color: #2c3e50;
+	--border: 1px solid var(--border-color);
+	--border-radius: 4px;
+	--border-radius-lg: 8px;
+
+	/* Shadows */
+	--shadow-sm: 0px 2px 4px rgba(0, 0, 0, 0.1);
+	--shadow-md: 0px 4px 8px rgba(0, 0, 0, 0.15);
+	--shadow-lg: 0px 6px 12px rgba(0, 0, 0, 0.2);
+
+	/* Button Styles */
+	--button-padding: 0.75em 1.5em;
+	--button-font-size: 1rem;
+
+	/* Layout */
+	--container-width: 90%;
+	--container-max: 1200px;
+}
+
+/* Reset Default Browser Styles */
+* {
+	margin: 0;
+	padding: 0;
+	box-sizing: border-box;
+}
+
+html,
+body {
+	background-color: var(--primary-back);
+	color: var(--primary-text);
+	line-height: var(--line-height);
+	font-size: var(--font-size-base);
+	font-family: var(--font-family);
+}
+
+body.font-nunito {
+	font-family: 'Nunito', sans-serif;
+}
+
+body.font-playfair {
+	font-family: 'Playfair', serif;
+}
+
+body.font-courier-prime {
+	font-family: 'Courier Prime', monospace;
+}
+
+body.font-roboto {
+	font-family: 'Roboto', sans-serif;
+}
