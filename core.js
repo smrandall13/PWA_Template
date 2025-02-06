@@ -1,36 +1,127 @@
 var CORE = {
+	data: {},
 	settings: {},
 	page: {
-		go: function (pageName) {
-			let content = ``;
-			const pages = Array.from(document.getElementsByClassName('menu-page'));
-			pages.forEach((page) => page.classList.remove('active'));
-			if (pageName === 'home') {
-				content = `
-				<h1>Welcome to My PWA</h1>
-				<p>This is where the selected content will be displayed.</p>
-				`;
-			} else if (pageName === 'settings') {
-				content = `
-				<h1>Settings</h1>
-				<p>This is where the settings will be displayed.</p>
-				`;
+		current: '',
+		go: async function (pageName) {
+			// Don't reload same page
+			if (CORE.page.current === pageName) {
+				return;
 			}
-			document.getElementById('page-' + pageName).classList.add('active');
 
-			document.getElementById('content').innerHTML = content;
-			MENU.toggle(2);
+			let htmlPath = ``;
+			let cssPath = ``;
+			let jsPath = ``;
+			if (pageName === 'home' || pageName === 'settings') {
+				htmlPath = `/app/${pageName}.html`;
+				cssPath = `/app/${pageName}.css`;
+				jsPath = `/app/${pageName}.js`;
+			} else {
+				let pageData = null;
+				if (CORE.data && CORE.data.pages) pageData = CORE.data.pages.find((page) => page.id === pageName);
+				if (pageData) {
+					if (pageData && pageData.html) {
+						htmlPath = pageData.html;
+					}
+					if (pageData && pageData.style) {
+						cssPath = pageData.style;
+					}
+					if (pageData && pageData.script) {
+						jsPath = pageData.script;
+					}
+				}
+			}
+			CORE.page.reset();
+			CORE.page.current = pageName;
+
+			if (!isEmpty(htmlPath)) {
+				const contentElement = document.getElementById('content');
+				try {
+					const response = await fetch(htmlPath);
+					if (!response.ok) throw new Error(`Failed to load ${htmlPath}`);
+					contentElement.innerHTML = await response.text();
+				} catch (error) {
+					console.error('Error loading HTML:', error);
+				}
+
+				// Load CSS
+				if (!isEmpty(cssPath)) {
+					try {
+						const response = await fetch(cssPath);
+						if (!response.ok) throw new Error(`Failed to load ${cssPath}`);
+
+						const cssLink = document.createElement('link');
+						cssLink.rel = 'stylesheet';
+						cssLink.href = cssPath;
+						cssLink.classList.add('dynamic-style'); // Mark to remove later
+						document.head.appendChild(cssLink);
+					} catch (error) {
+						console.error('Error loading CSS:', error);
+					}
+				}
+
+				// Load JS
+				if (!isEmpty(jsPath)) {
+					try {
+						const response = await fetch(jsPath);
+						if (!response.ok) throw new Error(`Failed to load ${jsPath}`);
+
+						const script = document.createElement('script');
+						script.src = jsPath;
+						script.classList.add('dynamic-script'); // Mark to remove later
+						script.defer = true;
+						document.body.appendChild(script);
+					} catch (error) {
+						console.error('Error loading JS:', error);
+					}
+				}
+
+				STORAGE.set('app-page', pageName);
+			}
+
+			document.getElementById('page-' + pageName).classList.add('active'); // Add Active Class to Page On Menu
+			MENU.toggle(2); // Close Menu
+		},
+		reset: function () {
+			// Remove previous styles
+			document.querySelectorAll('.dynamic-style').forEach((el) => el.remove());
+
+			// Remove previous scripts
+			document.querySelectorAll('.dynamic-script').forEach((el) => el.remove());
+
+			// Menu Reset
+			document.querySelectorAll('.menu-page').forEach((el) => el.classList.remove('active'));
+
+			// Clear `.content` div
+			const contentElement = document.querySelector('.content');
+			if (contentElement) contentElement.innerHTML = '';
+
+			CORE.page.current = '';
 		},
 		load: function () {
-			let pageName = STORAGE.get('page');
+			let pageName = STORAGE.get('app-page');
 			if (isEmpty(pageName)) pageName = 'home';
 			CORE.page.go(pageName);
 		},
 	},
-	init: function () {
-		FONT.init();
-		MENU.init();
-		CORE.page.load();
+	init: async function () {
+		try {
+			const response = await fetch('/app.json');
+			if (!response.ok) throw new Error(`Failed to load ${htmlPath}`);
+			CORE.data = await response.json();
+
+			// App Info
+			document.getElementById('app-name').innerHTML = CORE.data.name;
+			document.getElementById('app-title').innerHTML = CORE.data.name;
+			document.getElementById('app-favicon').href = CORE.data.icon;
+			document.getElementById('app-icon').src = CORE.data.icon;
+
+			FONT.init();
+			MENU.init();
+			CORE.page.load();
+		} catch (error) {
+			console.error('Error loading HTML:', error);
+		}
 	},
 };
 
@@ -40,8 +131,6 @@ const MENU = {
 		const toggle = document.getElementById('menuToggle');
 		const placeholder = document.getElementById('menu-placeholder');
 
-		console.log('MS1', menuState);
-
 		if (menuState === 0) {
 			if (menu.classList.contains('closed')) {
 				menuState = 1;
@@ -49,7 +138,6 @@ const MENU = {
 				menuState = 2;
 			}
 		}
-		console.log('MS2', menuState);
 
 		if (menuState === 1) {
 			menu.classList.remove('closed');
@@ -62,8 +150,24 @@ const MENU = {
 		}
 	},
 	init: function () {
-		const toggleButton = document.getElementById('menuToggle');
+		// Pages
+		if (CORE.data && CORE.data.pages) {
+			let pageData = '';
+			CORE.data.pages.forEach((page) => {
+				pageData += `<div id="page-${page.id}" class="menu-page" onclick="CORE.page.go('${page.id}')">`;
+				if (!isEmpty(page.icon)) {
+					pageData += `<div class="menu-page-icon" style='background-image: url("${page.icon}")'></div>`;
+				}
+				pageData += `<div class="menu-page-title">${page.name}</div>`;
+				pageData += `</div>`;
+			});
 
+			const pageList = document.getElementById('page-list');
+			pageList.innerHTML = pageData;
+		}
+
+		// Toggle
+		const toggleButton = document.getElementById('menuToggle');
 		toggleButton.addEventListener('click', () => {
 			this.toggle();
 		});
@@ -138,23 +242,6 @@ const FONT = {
 
 	init: function () {
 		this.load();
-	},
-};
-
-const STORAGE = {
-	get: function (key) {
-		let value = localStorage.getItem(key);
-		try {
-			return JSON.parse(value);
-		} catch (e) {
-			return value;
-		}
-	},
-	set: function (key, value) {
-		localStorage.setItem(key, JSON.stringify(value));
-	},
-	reset: function (key) {
-		localStorage.removeItem(key);
 	},
 };
 

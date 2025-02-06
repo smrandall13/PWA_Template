@@ -1,0 +1,43 @@
+<h1>Page Example 1</h1>
+<p>This information serves to inform you on how to edit this app and add your own pages.</p>
+<br />
+<h2>app.json</h2>
+<p>The app.json file is used to configure the app. You can change the App Name, Icon, version, and available Pages.</p>
+<br />
+<p>
+	The pages is an array of objects with the following properties:<br />
+	- id: The id of the page<br />
+	- name: The name of the page<br />
+	- icon: The icon of the page<br />
+	- html: The html of the page<br />
+	- style: The style of the page<br />
+	- script: The script of the page<br />
+	<br />Note that the script and style properties are optional.
+</p>
+<br />
+<pre><code>
+{
+	"name": "PWA Template", "icon": "/icons/app-icon.png",
+	"version": "1.0.0",
+	"pages": [
+		{
+			"id": "example01",
+			"name": "Example 01", -- This Page
+			"icon": "/pages/cross-white.png",
+			"html": "/pages/example01.html",
+			"style": "/pages/example01.css",
+			"script": "/pages/example01.js"
+		},
+		{
+			"id": "example02",
+			"name": "Example 02",
+			"html": "/pages/example02.html",
+			"style": "/pages/example02.css",
+			"script": "/pages/example02.js"
+		}
+	]
+}
+</code></pre>
+<br />
+
+If you would like your page assets to be available offline you can add them to the ASSETS_CUSTOM array in the service-worker.js file.

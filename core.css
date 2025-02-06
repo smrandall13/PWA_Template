@@ -1,5 +1,32 @@
 /* Core CSS - Reset and Base Styles */
+/* Scrollbar width */
+::-webkit-scrollbar {
+	width: 10px;
+}
 
+/* Scrollbar Track */
+::-webkit-scrollbar-track {
+	background: rgba(0, 0, 0, 0.5); /* Light gray */
+	border-radius: var(--border-radius);
+}
+
+/* Scrollbar Handle */
+::-webkit-scrollbar-thumb {
+	background: var(--color-accent); /* Dark gray */
+	border-radius: var(--border-radius);
+}
+
+/* Scrollbar Handle on Hover */
+::-webkit-scrollbar-thumb:hover {
+	background: #555;
+}
+
+pre {
+	background: rgba(0, 0, 0, 0.5);
+	padding: 16px;
+	/* margin: 8px; */
+	border-radius: var(--border-radius);
+}
 /* Default Link Styles */
 a {
 	color: var(--color-accent);
@@ -86,7 +113,6 @@ header {
 	gap: 8px;
 	background: var(--button-back);
 	color: var(--color-text);
-	border-radius: 4px;
 	padding: 8px 12px;
 	cursor: pointer;
 	transition: background 0.3s ease-in-out;
@@ -154,7 +180,7 @@ header {
 #menuToggle:after,
 #menuToggle:before {
 	background-color: var(--menu-toggle-color);
-	border-radius: 3px;
+	border-radius: var(--border-radius);
 	content: '';
 	display: block;
 	height: 3px;
@@ -237,8 +263,8 @@ header {
 	max-width: 100%;
 	justify-content: flex-start;
 	cursor: pointer;
-	border-top-left-radius: 4px;
-	border-bottom-left-radius: 4px;
+	border-top-left-radius: var(--border-radius);
+	border-bottom-left-radius: var(--border-radius);
 	padding: 0 4px;
 	transition: background 0.3s ease;
 	text-shadow: 0px 0x 2px rgba(0, 0, 0, 0.5);
@@ -248,13 +274,13 @@ header {
 .menu-page.active {
 	background: var(--color-accent);
 }
-.app-settings {
+.menu-settings {
 	flex: 0;
 	margin-top: auto;
 	flex-shrink: 0;
 	flex-basis: auto;
 }
-.page-icon {
+.menu-page-icon {
 	width: 20px;
 	max-width: 20px;
 	min-width: 20px;
@@ -263,7 +289,7 @@ header {
 	background-repeat: no-repeat;
 	background-position: center;
 }
-.page-title {
+.menu-page-title {
 	flex: 1;
 }
 
@@ -279,8 +305,9 @@ header {
 #content {
 	flex-grow: 1;
 	max-width: 1000px;
-	margin: 16px auto;
+	margin: 0 auto;
 	padding: 16px;
+	overflow: auto;
 }
 
 /* Responsive Behavior */
