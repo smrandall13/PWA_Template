@@ -33,24 +33,22 @@
 					Menu
 					<div id="menuToggle" class="menu-toggle"><div></div></div>
 				</h2>
-				<div class="menu-content">
-					<ul id="menuList">
-						<li class="menu-page" onclick="CORE.page.go('home')">
+				<div id="menu-content">
+					<div class="menu-list">
+						<div id="page-home" class="menu-page active" onclick="CORE.page.go('home')">
 							<div class="page-icon icon-home"></div>
 							<div class="page-title">Home</div>
-						</li>
-					</ul>
-					<ul id="savedVersions">
+						</div>
+					</div>
+					<div class="menu-list">
 						<!-- Dynamically added saved content -->
-					</ul>
-				</div>
-				<div class="menu-settings">
-					<ul id="appPages">
-						<li class="menu-page" onclick="CORE.page.go('settings')">
+					</div>
+					<div class="menu-list app-settings">
+						<div id="page-settings" class="menu-page" onclick="CORE.page.go('settings')">
 							<div class="page-icon icon-settings"></div>
 							<div class="page-title">Settings</div>
-						</li>
-					</ul>
+						</div>
+					</div>
 				</div>
 			</aside>
 

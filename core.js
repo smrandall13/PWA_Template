@@ -3,7 +3,8 @@ var CORE = {
 	page: {
 		go: function (pageName) {
 			let content = ``;
-			console.log('P', pageName);
+			const pages = Array.from(document.getElementsByClassName('menu-page'));
+			pages.forEach((page) => page.classList.remove('active'));
 			if (pageName === 'home') {
 				content = `
 				<h1>Welcome to My PWA</h1>
@@ -15,6 +16,7 @@ var CORE = {
 				<p>This is where the settings will be displayed.</p>
 				`;
 			}
+			document.getElementById('page-' + pageName).classList.add('active');
 
 			document.getElementById('content').innerHTML = content;
 			MENU.toggle(2);
