@@ -98,12 +98,12 @@ header {
 	font-weight: bold;
 }
 
-.top-nav {
+.app-nav {
 	flex-grow: 1;
 	text-align: center;
 }
 
-.install-button {
+.app-install {
 	background: var(--button-back);
 	color: var(--color-text);
 	padding: 8px 12px;
@@ -117,13 +117,8 @@ header {
 	cursor: pointer;
 	transition: background 0.3s ease-in-out;
 }
-.install-button[hidden] {
+.app-install[hidden] {
 	display: none;
-}
-
-.install-button svg {
-	width: 20px;
-	height: 20px;
 }
 
 /* Layout */
@@ -137,8 +132,8 @@ header {
 }
 
 /* Menu */
-#menu,
-#menu-placeholder {
+#app-menu:not(.hidden),
+#app-menu-back:not(.hidden) {
 	position: absolute;
 	background: var(--secondary-back);
 	color: var(--secondary-text);
@@ -155,30 +150,30 @@ header {
 	flex-direction: column;
 	justify-content: flex-start;
 }
-#menu {
+#app-menu {
 	z-index: 1;
 }
-#menu-placeholder {
+#app-menu-back:not(.hidden) {
 	position: relative;
 	background: transparent;
 }
-#menu.closed,
-#menu-placeholder.closed {
+#app-menu.app-menu-closed:not(.hidden),
+#app-menu-back.app-menu-closed:not(.hidden) {
 	width: 44px;
 	min-width: 44px;
 	max-width: 44px;
 }
 
-#menuToggle {
+#app-menu:not(.hidden) #app-menu-toggle {
 	width: 20px;
 	height: 25px;
 	margin-right: 5px;
 	cursor: pointer;
 	text-align: left;
 }
-#menuToggle div,
-#menuToggle:after,
-#menuToggle:before {
+#app-menu-toggle div,
+#app-menu-toggle:after,
+#app-menu-toggle:before {
 	background-color: var(--menu-toggle-color);
 	border-radius: var(--border-radius);
 	content: '';
@@ -187,20 +182,20 @@ header {
 	margin: 4px 0;
 	transition: all 0.3s ease-in-out;
 }
-#menuToggle:after,
-#menuToggle:before {
+#app-menu-toggle:after,
+#app-menu-toggle:before {
 	width: calc(100% - 5px);
 	transform: translateX(5px);
 }
-#menuToggle.closed {
+#app-menu-toggle.app-menu-closed {
 	text-align: left;
 }
-#menuToggle.closed:after,
-#menuToggle.closed:before {
+#app-menu-toggle.app-menu-closed:after,
+#app-menu-toggle.app-menu-closed:before {
 	width: calc(100% - 5px);
 	transform: translateX(0px);
 }
-#menu-header {
+#app-menu-header {
 	/* position: absolute; */
 	display: flex;
 	flex-direction: row;
@@ -216,7 +211,7 @@ header {
 	max-height: 40px;
 	font-size: var(--font-size-h2);
 }
-#menu-content {
+#app-menu-content {
 	/* position: absolute; */
 	display: flex;
 	flex-direction: column;
@@ -227,21 +222,21 @@ header {
 	max-width: 200px;
 	gap: 4px;
 }
-#menu-content {
+#app-menu-content {
 	overflow-y: auto;
 	overflow-x: hidden;
 	flex-shrink: 0;
 	flex-basis: auto;
 	flex-grow: 1;
 }
-#menu-content h2 {
+#app-menu-content h2 {
 	display: flex;
 	flex-direction: row;
 	align-items: center;
 	justify-content: space-between;
 }
 
-.menu-list {
+.app-menu-list {
 	min-height: 40px;
 	height: auto;
 	display: flex;
@@ -250,7 +245,7 @@ header {
 	gap: 4px;
 }
 
-.menu-page {
+.app-menu-page {
 	display: flex;
 	flex-direction: row;
 	align-items: center;
@@ -269,18 +264,18 @@ header {
 	transition: background 0.3s ease;
 	text-shadow: 0px 0x 2px rgba(0, 0, 0, 0.5);
 }
-.menu-page:hover,
-.menu-page.active,
-.menu-page.active {
+.app-menu-page:hover,
+.app-menu-page.active,
+.app-menu-page.active {
 	background: var(--color-accent);
 }
-.menu-settings {
+.app-menu-settings {
 	flex: 0;
 	margin-top: auto;
 	flex-shrink: 0;
 	flex-basis: auto;
 }
-.menu-page-icon {
+.app-menu-page-icon {
 	width: 20px;
 	max-width: 20px;
 	min-width: 20px;
@@ -289,52 +284,63 @@ header {
 	background-repeat: no-repeat;
 	background-position: center;
 }
-.menu-page-title {
+.app-menu-page-title {
 	flex: 1;
 }
 
-#settingsBtn {
-	margin-top: 16px;
-	background: var(--button-back);
-	color: var(--color-text);
-	border-radius: 4px;
-	padding: 8px 12px;
-}
-
 /* Content */
-#content {
+#app-content {
 	flex-grow: 1;
-	max-width: 1000px;
 	margin: 0 auto;
 	padding: 16px;
 	overflow: auto;
+	display: flex;
+	flex-direction: column;
+	justify-content: flex-start;
+	align-items: center;
+}
+#app-content-container {
+	max-width: 1000px;
+	min-width: 300px;
+	width: 100%;
 }
 
+/* Support */
+.hidden {
+	display: none;
+	visibility: hidden;
+	width: 0;
+	height: 0;
+	min-width: 0;
+	max-width: none;
+	min-height: 0;
+	max-height: none;
+}
 /* Responsive Behavior */
 @media (max-width: 1199px) {
-	#menu-placeholder,
-	#menu-placeholder.closed {
+	#app-menu-back:not(.hidden),
+	#app-menu-back.app-menu-closed:not(.hidden) {
 		width: 40px;
 		min-width: 40px;
 		max-width: 40px;
 	}
-	#menu {
+	#app-menu:not(.hidden) {
 		border-right: 2px solid var(--color-border);
 	}
-	#menuToggle {
+	#app-menu:not(.hidden) #app-menu-toggle {
 		display: inline-block;
 	}
-	#menu-header {
+	#app-menu-header {
 		justify-content: space-between;
 		position: absolute;
 		right: 0;
 	}
-	#menu-content {
+	#app-menu-content {
 		top: 40px;
 		padding-bottom: 40px;
 		padding-left: 4px;
 	}
-	#menu:not(.closed) {
+	#app-menu:not(.app-menu-closed) {
 		/* box-shadow: 0px 1px 5px rgba(0, 168, 120, 1); */
 	}
 	header {
@@ -342,15 +348,15 @@ header {
 	}
 }
 @media (min-width: 1200px) {
-	#menu,
-	#menu-placeholder,
-	#menu.closed,
-	#menu-placeholder.closed {
+	#app-menu:not(.hidden),
+	#app-menu-back:not(.hidden),
+	#app-menu.app-menu-closed:not(.hidden),
+	#app-menu-back.app-menu-closed:not(.hidden) {
 		width: 200px;
 		min-width: 200px;
 		max-width: 200px;
 	}
-	#menuToggle {
+	#app-menu:not(.hidden) #app-menu-toggle {
 		display: none;
 		padding-left: 8px;
 	}

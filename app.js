@@ -1,11 +1,11 @@
-var CORE = {
+var APP = {
 	data: {},
 	settings: {},
 	page: {
 		current: '',
 		go: async function (pageName) {
 			// Don't reload same page
-			if (CORE.page.current === pageName) {
+			if (APP.page.current === pageName) {
 				return;
 			}
 
@@ -18,7 +18,7 @@ var CORE = {
 				jsPath = `/app/${pageName}.js`;
 			} else {
 				let pageData = null;
-				if (CORE.data && CORE.data.pages) pageData = CORE.data.pages.find((page) => page.id === pageName);
+				if (APP.data && APP.data.pages) pageData = APP.data.pages.find((page) => page.id === pageName);
 				if (pageData) {
 					if (pageData && pageData.html) {
 						htmlPath = pageData.html;
@@ -31,11 +31,11 @@ var CORE = {
 					}
 				}
 			}
-			CORE.page.reset();
-			CORE.page.current = pageName;
+			APP.page.reset();
+			APP.page.current = pageName;
 
 			if (!isEmpty(htmlPath)) {
-				const contentElement = document.getElementById('content');
+				const contentElement = document.getElementById('app-content-container');
 				try {
 					const response = await fetch(htmlPath);
 					if (!response.ok) throw new Error(`Failed to load ${htmlPath}`);
@@ -80,7 +80,7 @@ var CORE = {
 			}
 
 			document.getElementById('page-' + pageName).classList.add('active'); // Add Active Class to Page On Menu
-			MENU.toggle(2); // Close Menu
+			APP.menu.toggle(2); // Close Menu
 		},
 		reset: function () {
 			// Remove previous styles
@@ -90,87 +90,91 @@ var CORE = {
 			document.querySelectorAll('.dynamic-script').forEach((el) => el.remove());
 
 			// Menu Reset
-			document.querySelectorAll('.menu-page').forEach((el) => el.classList.remove('active'));
+			document.querySelectorAll('.app-menu-page').forEach((el) => el.classList.remove('active'));
 
-			// Clear `.content` div
-			const contentElement = document.querySelector('.content');
+			// Clear
+			const contentElement = document.getElementById('app-content-container');
 			if (contentElement) contentElement.innerHTML = '';
 
-			CORE.page.current = '';
+			APP.page.current = '';
 		},
 		load: function () {
 			let pageName = STORAGE.get('app-page');
 			if (isEmpty(pageName)) pageName = 'home';
-			CORE.page.go(pageName);
+			APP.page.go(pageName);
+		},
+	},
+	menu: {
+		toggle: function (menuState = 0) {
+			const menu = document.getElementById('app-menu');
+			const toggle = document.getElementById('app-menu-toggle');
+			const back = document.getElementById('app-menu-back');
+
+			if (menuState === 0) {
+				if (menu.classList.contains('app-menu-closed')) {
+					menuState = 1;
+				} else {
+					menuState = 2;
+				}
+			}
+
+			if (menuState === 1) {
+				menu.classList.remove('app-menu-closed');
+				toggle.classList.remove('app-menu-closed');
+				back.classList.remove('app-menu-closed');
+			} else {
+				menu.classList.add('app-menu-closed');
+				toggle.classList.add('app-menu-closed');
+				back.classList.add('app-menu-closed');
+			}
+		},
+		init: function () {
+			if (APP.data && APP.data.displayMenu === true) {
+				// Pages
+				if (APP.data && APP.data.pages) {
+					let pageData = '';
+					APP.data.pages.forEach((page) => {
+						pageData += `<div id="page-${page.id}" class="app-menu-page" onclick="APP.page.go('${page.id}')">`;
+						if (!isEmpty(page.icon)) {
+							pageData += `<div class="app-menu-page-icon" style='background-image: url("${page.icon}")'></div>`;
+						}
+						pageData += `<div class="app-menu-page-title">${page.name}</div>`;
+						pageData += `</div>`;
+					});
+
+					const pageList = document.getElementById('app-page-list');
+					pageList.innerHTML = pageData;
+				}
+
+				// Toggle
+				const toggleButton = document.getElementById('app-menu-toggle');
+				toggleButton.addEventListener('click', () => {
+					this.toggle();
+				});
+			} else {
+				document.getElementById('app-menu').classList.add('hidden');
+				document.getElementById('app-menu-back').classList.add('hidden');
+			}
 		},
 	},
 	init: async function () {
 		try {
 			const response = await fetch('/app.json');
 			if (!response.ok) throw new Error(`Failed to load ${htmlPath}`);
-			CORE.data = await response.json();
+			APP.data = await response.json();
 
 			// App Info
-			document.getElementById('app-name').innerHTML = CORE.data.name;
-			document.getElementById('app-title').innerHTML = CORE.data.name;
-			document.getElementById('app-favicon').href = CORE.data.icon;
-			document.getElementById('app-icon').src = CORE.data.icon;
+			document.getElementById('app-name').innerHTML = APP.data.name;
+			document.getElementById('app-title').innerHTML = APP.data.name;
+			document.getElementById('app-favicon').href = APP.data.icon;
+			document.getElementById('app-icon').src = APP.data.icon;
 
 			FONT.init();
-			MENU.init();
-			CORE.page.load();
+			APP.menu.init();
+			APP.page.load();
 		} catch (error) {
 			console.error('Error loading HTML:', error);
 		}
-	},
-};
-
-const MENU = {
-	toggle: function (menuState = 0) {
-		const menu = document.getElementById('menu');
-		const toggle = document.getElementById('menuToggle');
-		const placeholder = document.getElementById('menu-placeholder');
-
-		if (menuState === 0) {
-			if (menu.classList.contains('closed')) {
-				menuState = 1;
-			} else {
-				menuState = 2;
-			}
-		}
-
-		if (menuState === 1) {
-			menu.classList.remove('closed');
-			toggle.classList.remove('closed');
-			placeholder.classList.remove('closed');
-		} else {
-			menu.classList.add('closed');
-			toggle.classList.add('closed');
-			placeholder.classList.add('closed');
-		}
-	},
-	init: function () {
-		// Pages
-		if (CORE.data && CORE.data.pages) {
-			let pageData = '';
-			CORE.data.pages.forEach((page) => {
-				pageData += `<div id="page-${page.id}" class="menu-page" onclick="CORE.page.go('${page.id}')">`;
-				if (!isEmpty(page.icon)) {
-					pageData += `<div class="menu-page-icon" style='background-image: url("${page.icon}")'></div>`;
-				}
-				pageData += `<div class="menu-page-title">${page.name}</div>`;
-				pageData += `</div>`;
-			});
-
-			const pageList = document.getElementById('page-list');
-			pageList.innerHTML = pageData;
-		}
-
-		// Toggle
-		const toggleButton = document.getElementById('menuToggle');
-		toggleButton.addEventListener('click', () => {
-			this.toggle();
-		});
 	},
 };
 
@@ -183,7 +187,7 @@ const PWA = {
 
 	handleInstallPrompt: function () {
 		let deferredPrompt;
-		const installBtn = document.getElementById('installBtn');
+		const installBtn = document.getElementById('app-install');
 
 		window.addEventListener('beforeinstallprompt', (e) => {
 			e.preventDefault();
@@ -248,5 +252,5 @@ const FONT = {
 // Initialize PWA functionality
 document.addEventListener('DOMContentLoaded', () => {
 	PWA.init();
-	CORE.init();
+	APP.init();
 });

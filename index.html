@@ -3,11 +3,11 @@
 	<head>
 		<meta charset="UTF-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-		<meta name="theme-color" content="#121c2d" />
+		<meta id="app-theme-color" name="theme-color" content="#121c2d" />
 		<link id="app-favicon" rel="icon" href="icons/app-icon.png" />
 		<link rel="manifest" href="manifest.json" />
 		<link rel="stylesheet" href="root.css" />
-		<link rel="stylesheet" href="core.css" />
+		<link rel="stylesheet" href="app.css" />
 		<link rel="stylesheet" href="icons.css" />
 		<title id="app-title">PWA Template</title>
 		<script src="support.js"></script>
@@ -18,43 +18,42 @@
 				<img id="app-icon" src="icons/app-icon.png" alt="App Icon" class="app-icon" />
 				<span id="app-name" class="app-name">My PWA</span>
 			</div>
-			<nav class="top-nav">
+			<nav class="app-nav">
 				<!-- Optional Nav Items -->
 			</nav>
-			<button id="installBtn" class="install-button" hidden>
+			<button id="app-install" class="app-install" hidden>
 				<div class="icon icon-download"></div>
 				Install
 			</button>
 		</header>
 		<main class="app-container">
-			<div id="menu-placeholder"></div>
-			<aside id="menu" class="menu">
-				<h2 id="menu-header">
+			<div id="app-menu-back"></div>
+			<aside id="app-menu">
+				<h2 id="app-menu-header">
 					Menu
-					<div id="menuToggle" class="menu-toggle"><div></div></div>
+					<div id="app-menu-toggle" class="menu-toggle"><div></div></div>
 				</h2>
-				<div id="menu-content">
-					<div class="menu-list">
-						<div id="page-home" class="menu-page active" onclick="CORE.page.go('home')">
-							<div class="menu-page-icon icon-home"></div>
-							<div class="menu-page-title">Home</div>
+				<div id="app-menu-content">
+					<div class="app-menu-list">
+						<div id="page-home" class="app-menu-page active" onclick="APP.page.go('home')">
+							<div class="app-menu-page-icon icon-home"></div>
+							<div class="app-menu-page-title">Home</div>
 						</div>
 					</div>
-					<div id="page-list" class="menu-list">
+					<div id="app-page-list" class="app-menu-list">
 						<!-- Dynamically added saved content -->
 					</div>
-					<div class="menu-list menu-settings">
-						<div id="page-settings" class="menu-page" onclick="CORE.page.go('settings')">
-							<div class="menu-page-icon icon-settings"></div>
-							<div class="menu-page-title">Settings</div>
+					<div class="app-menu-list app-menu-settings">
+						<div id="page-settings" class="app-menu-page" onclick="APP.page.go('settings')">
+							<div class="app-menu-page-icon icon-settings"></div>
+							<div class="app-menu-page-title">Settings</div>
 						</div>
 					</div>
 				</div>
 			</aside>
-
-			<section id="content"></section>
+			<section id="app-content"><div id="app-content-container"></div></section>
 		</main>
 
-		<script src="core.js"></script>
+		<script src="app.js"></script>
 	</body>
 </html>
