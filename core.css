@@ -116,13 +116,15 @@ header {
 	width: 200px;
 	min-width: 200px;
 	max-width: 200px;
+	height: calc(100vh - 60px);
 	min-height: calc(100vh - 60px);
-	height: 100%;
+	max-height: calc(100vh - 60px);
 	transition: all 0.3s ease-in-out;
 	overflow: hidden;
 	flex: 0;
 	display: flex;
 	flex-direction: column;
+	justify-content: flex-start;
 }
 #menu {
 	z-index: 1;
@@ -181,12 +183,16 @@ header {
 	max-width: 200px;
 	flex-wrap: nowrap;
 	height: 40px;
+	min-height: 40px;
+	max-height: 40px;
+	flex: 0;
 	right: 0;
 	top: 0;
 	font-size: var(--font-size-h2);
 }
-.menu-content {
-	position: absolute;
+.menu-content,
+.menu-settings {
+	/* position: absolute; */
 	display: flex;
 	flex-direction: column;
 	align-items: center;
@@ -196,6 +202,18 @@ header {
 	max-width: 200px;
 	top: 40px;
 	left: 0;
+	flex: 1;
+}
+.menu-content {
+	overflow-y: auto;
+	overflow-x: hidden;
+}
+.menu-settings {
+	flex: 0;
+	height: 40px;
+	min-height: 40px;
+	max-height: 40px;
+	margin-top: auto;
 }
 .menu-content h2 {
 	display: flex;
