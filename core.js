@@ -8,13 +8,7 @@ var CORE = {
 const PWA = {
 	registerServiceWorker: function () {
 		if ('serviceWorker' in navigator) {
-			navigator.serviceWorker.register('/service-worker.js').then((registration) => {
-				navigator.serviceWorker.addEventListener('controllerchange', () => {
-					if (confirm('A new version is available. Reload now?')) {
-						window.location.reload();
-					}
-				});
-			});
+			navigator.serviceWorker.register('/service-worker.js');
 		}
 	},
 
@@ -39,9 +33,19 @@ const PWA = {
 		});
 	},
 
+	handleMenuToggle: function () {
+		const menu = document.querySelector('.menu');
+		const toggleButton = document.getElementById('menuToggle');
+
+		toggleButton.addEventListener('click', () => {
+			menu.classList.toggle('open');
+		});
+	},
+
 	init: function () {
 		this.registerServiceWorker();
 		this.handleInstallPrompt();
+		this.handleMenuToggle();
 	},
 };
 

@@ -1,73 +1,126 @@
-/* Core CSS - Reset and Base Styles */
-
-/* Default Link Styles */
-a {
-	color: var(--color-accent);
-	text-decoration: none;
-	transition: color 0.3s ease-in-out;
-}
-
-a:hover {
-	color: var(--color-highlight);
-}
-
-/* Default Button Styles */
-button {
-	background: var(--button-back);
-	color: var(--color-text);
-	border: none;
-	padding: var(--button-padding);
-	font-size: var(--button-font-size);
-	border-radius: var(--border-radius);
-	cursor: pointer;
-	transition: background 0.3s ease-in-out;
-}
-
-button:hover {
-	background: var(--button-hover-back);
-}
-
-/* Utility Classes */
-.container {
-	width: var(--container-width);
-	max-width: var(--container-max);
-	margin: 0 auto;
-}
-
-.text-center {
-	text-align: center;
-}
-
-/* Header Styles */
+/* Header */
 header {
-	background-color: var(--primary-back);
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	background: var(--primary-back);
 	color: var(--primary-text);
-	padding: 16px;
-	text-align: center;
+	padding: 12px 16px;
 	border-bottom: 4px solid var(--color-accent);
 }
 
-header h1 {
-	margin: 0;
-	padding: 8px 0;
-	font-size: 24px;
-}
-
-header nav {
+.app-info {
 	display: flex;
-	justify-content: center;
-	gap: 12px;
-	padding-top: 8px;
+	align-items: center;
+	gap: 8px;
 }
 
-header nav a {
+.app-icon {
+	width: 32px;
+	height: 32px;
+}
+
+.app-name {
+	font-size: 1.2rem;
+	font-weight: bold;
+}
+
+.top-nav {
+	flex-grow: 1;
+	text-align: center;
+}
+
+.install-button {
+	background: var(--button-back);
 	color: var(--color-text);
-	padding: 4px 8px;
-	border-radius: 4px;
-	transition: background 0.3s ease-in-out;
+	padding: 8px 12px;
+	border-radius: var(--border-radius);
 }
 
-header nav a:hover {
-	background-color: var(--color-accent);
-	color: var(--primary-back);
+/* Layout */
+.app-container {
+	display: flex;
+	flex-direction: row;
+	max-width: 100%;
+}
+
+/* Menu */
+.menu {
+	background: var(--secondary-back);
+	color: var(--primary-text);
+	width: 200px;
+	min-width: 200px;
+	transition: transform 0.3s ease-in-out;
+	overflow: hidden;
+}
+
+.menu-toggle {
+	display: none;
+	background: none;
+	color: var(--primary-text);
+	font-size: 24px;
+	padding: 8px;
+}
+
+.menu-content {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	padding: 16px;
+}
+
+#savedVersions {
+	list-style: none;
+	padding: 0;
+}
+
+#savedVersions li {
+	padding: 8px;
+	cursor: pointer;
+	transition: background 0.3s ease;
+}
+
+#savedVersions li:hover {
+	background: var(--color-accent);
+}
+
+/* Settings Button */
+#settingsBtn {
+	margin-top: 16px;
+	background: var(--button-back);
+	color: var(--color-text);
+	border-radius: 4px;
+	padding: 8px 12px;
+}
+
+/* Content */
+.content {
+	flex-grow: 1;
+	max-width: 1000px;
+	margin: 16px auto;
+	padding: 16px;
+}
+
+/* Responsive Behavior */
+@media (max-width: 1199px) {
+	.menu {
+		position: absolute;
+		left: -200px;
+		height: 100%;
+		transform: translateX(0);
+	}
+
+	.menu-toggle {
+		display: block;
+	}
+
+	.menu.open {
+		transform: translateX(200px);
+	}
+}
+
+@media (min-width: 1200px) {
+	.menu {
+		transform: translateX(0);
+	}
 }
