@@ -4,9 +4,11 @@
 		<meta charset="UTF-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 		<meta name="theme-color" content="#121c2d" />
+		<link rel="icon" href="icons/favicon.png" />
 		<link rel="manifest" href="manifest.json" />
 		<link rel="stylesheet" href="root.css" />
 		<link rel="stylesheet" href="core.css" />
+		<link rel="stylesheet" href="icons.css" />
 		<title>PWA Template</title>
 		<script src="support.js"></script>
 	</head>
@@ -19,25 +21,38 @@
 			<nav class="top-nav">
 				<!-- Optional Nav Items -->
 			</nav>
-			<button id="installBtn" class="install-button" hidden>Install App</button>
+			<button id="installBtn" class="install-button" hidden>
+				<div class="icon icon-download"></div>
+				Install
+			</button>
 		</header>
-
 		<main class="app-container">
-			<aside class="menu">
-				<button id="menuToggle" class="menu-toggle">&#9776;</button>
+			<div id="menu-placeholder"></div>
+			<aside id="menu" class="menu">
+				<h2 id="menu-header">
+					Menu
+					<div id="menuToggle" class="menu-toggle"><div></div></div>
+				</h2>
 				<div class="menu-content">
+					<ul id="menuList">
+						<li class="menu-page" onclick="CORE.page.go('home')">
+							<div class="page-icon icon-home"></div>
+							<div class="page-title">Home</div>
+						</li>
+					</ul>
 					<ul id="savedVersions">
-						<li>Home</li>
 						<!-- Dynamically added saved content -->
 					</ul>
-					<button id="settingsBtn">⚙️ Settings</button>
+					<ul id="appPages">
+						<li class="menu-page" onclick="CORE.page.go('settings')">
+							<div class="page-icon icon-settings"></div>
+							<div class="page-title">Settings</div>
+						</li>
+					</ul>
 				</div>
 			</aside>
 
-			<section class="content">
-				<h1>Welcome to My PWA</h1>
-				<p>This is where the selected content will be displayed.</p>
-			</section>
+			<section id="content"></section>
 		</main>
 
 		<script src="core.js"></script>

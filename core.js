@@ -1,7 +1,70 @@
 var CORE = {
 	settings: {},
+	page: {
+		go: function (pageName) {
+			let content = ``;
+			console.log('P', pageName);
+			if (pageName === 'home') {
+				content = `
+				<h1>Welcome to My PWA</h1>
+				<p>This is where the selected content will be displayed.</p>
+				`;
+			} else if (pageName === 'settings') {
+				content = `
+				<h1>Settings</h1>
+				<p>This is where the settings will be displayed.</p>
+				`;
+			}
+
+			document.getElementById('content').innerHTML = content;
+			MENU.toggle(2);
+		},
+		load: function () {
+			let pageName = STORAGE.get('page');
+			if (isEmpty(pageName)) pageName = 'home';
+			CORE.page.go(pageName);
+		},
+	},
 	init: function () {
 		FONT.init();
+		MENU.init();
+		CORE.page.load();
+	},
+};
+
+const MENU = {
+	toggle: function (menuState = 0) {
+		const menu = document.getElementById('menu');
+		const toggle = document.getElementById('menuToggle');
+		const placeholder = document.getElementById('menu-placeholder');
+
+		console.log('MS1', menuState);
+
+		if (menuState === 0) {
+			if (menu.classList.contains('closed')) {
+				menuState = 1;
+			} else {
+				menuState = 2;
+			}
+		}
+		console.log('MS2', menuState);
+
+		if (menuState === 1) {
+			menu.classList.remove('closed');
+			toggle.classList.remove('closed');
+			placeholder.classList.remove('closed');
+		} else {
+			menu.classList.add('closed');
+			toggle.classList.add('closed');
+			placeholder.classList.add('closed');
+		}
+	},
+	init: function () {
+		const toggleButton = document.getElementById('menuToggle');
+
+		toggleButton.addEventListener('click', () => {
+			this.toggle();
+		});
 	},
 };
 
@@ -33,19 +96,9 @@ const PWA = {
 		});
 	},
 
-	handleMenuToggle: function () {
-		const menu = document.querySelector('.menu');
-		const toggleButton = document.getElementById('menuToggle');
-
-		toggleButton.addEventListener('click', () => {
-			menu.classList.toggle('open');
-		});
-	},
-
 	init: function () {
 		this.registerServiceWorker();
 		this.handleInstallPrompt();
-		this.handleMenuToggle();
 	},
 };
 

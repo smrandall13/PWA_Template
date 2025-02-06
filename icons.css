@@ -1,0 +1,19 @@
+.icon {
+	width: 20px;
+	height: 20px;
+	display: inline-block;
+	background-size: contain;
+	background-repeat: no-repeat;
+	background-position: center;
+}
+
+.icon-settings {
+	background-image: url(/assets/images/settings-white.png);
+}
+
+.icon-download {
+	background-image: url(/assets/images/download-white.png);
+}
+.icon-home {
+	background-image: url(/assets/images/home-white.png);
+}

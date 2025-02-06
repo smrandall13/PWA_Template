@@ -1,10 +1,16 @@
 const CACHE_VERSION = new Date().toISOString().split('T')[0]; // Auto-version based on date
 const CACHE_NAME = `pwa-cache-${CACHE_VERSION}`;
-const ASSETS = ['/', '/index.html', '/root.css', '/core.css', '/core.js', '/support.js', '/manifest.json', '/icons/favicon.png', '/assets/fonts/Playfair.ttf', '/assets/fonts/Nunito.ttf', '/assets/fonts/CourierPrime.ttf', '/assets/fonts/Roboto.ttf'];
+
+const ASSETS_STYLES = ['/root.css', '/core.css', '/icons.css'];
+const ASSETS_SCRIPTS = ['/core.js', '/support.js', '/manifest.json'];
+const ASSETS_ICONS = ['/icons/favicon.png', '/assets/images/settings-white.png', '/assets/images/download-white.png', '/assets/images/home-white.png', '/assets/images/draggable-white.png', '/assets/images/hand-white.png', '/assets/images/create-white.png', '/assets/images/edit-white.png', '/assets/images/profile-white.png'];
+const ASSETS_FONTS = ['/assets/fonts/Playfair.ttf', '/assets/fonts/Nunito.ttf', '/assets/fonts/CourierPrime.ttf', '/assets/fonts/Roboto.ttf'];
+const ASSETS_PAGES = ['/', '/index.html'];
 
 self.addEventListener('install', (event) => {
 	event.waitUntil(
 		caches.open(CACHE_NAME).then((cache) => {
+			const ASSETS = [...ASSETS_STYLES, ...ASSETS_SCRIPTS, ...ASSETS_ICONS, ...ASSETS_FONTS, ...ASSETS_PAGES];
 			return cache.addAll(ASSETS);
 		})
 	);
