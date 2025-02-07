@@ -6,6 +6,8 @@
 	"defaultTheme": "dark",
 	"defaultFont": "Nunito",
 
+	"copyright": "&copy; 2025 Software Response",
+
 	"displayMenu": true,
 	"displayHome": true,
 	"displaySettings": true,
@@ -14,19 +16,19 @@
 
 	"pages": [
 		{
-			"id": "example01",
+			"id": "appinfo",
 			"name": "App Info",
-			"html": "/pages/example01.html",
-			"style": "/pages/example01.css",
-			"script": "/pages/example01.js",
+			"html": "/pages/appinfo.html",
+			"style": "/pages/appinfo.css",
+			"script": "/pages/appinfo.js",
 			"icon": "/pages/question-white.png"
 		},
 		{
-			"id": "example02",
+			"id": "appdata",
 			"name": "App Data",
-			"html": "/pages/example02.html",
-			"style": "/pages/example02.css",
-			"script": "/pages/example02.js",
+			"html": "/pages/appdata.html",
+			"style": "/pages/appdata.css",
+			"script": "/pages/appdata.js",
 			"icon": "/pages/question-white.png"
 		}
 	]

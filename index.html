@@ -10,16 +10,20 @@
 		<title id="app-title">PWA Template</title>
 	</head>
 	<body>
-		<header>
-			<div class="app-info">
-				<img id="app-icon" src="icons/app-icon.png" alt="App Icon" class="app-icon" />
+		<div id="app-cover">
+			<div id="app-cover-image"></div>
+			<div id="app-cover-text">Loading...</div>
+		</div>
+		<header id="app-header">
+			<div id="app-info">
+				<img id="app-icon" src="icons/app-icon.png" alt="App Icon" />
 				<span id="app-name" class="app-name">My PWA</span>
 			</div>
 			<nav class="app-nav">
 				<!-- Optional Nav Items -->
 			</nav>
-			<button id="app-install" class="app-install app-hidden">
-				<div class="icon icon-download"></div>
+			<button id="app-install" class="app-button app-install app-hidden">
+				<div class="app-icon app-icon-download"></div>
 				Install
 			</button>
 		</header>
@@ -33,7 +37,7 @@
 				<div id="app-menu-content">
 					<div id="app-menu-home" class="app-menu-list app-hidden">
 						<div id="page-home" class="app-menu-page active" onclick="APP.page.go('home')">
-							<div class="app-menu-page-icon icon-home"></div>
+							<div class="app-menu-page-icon app-icon-home"></div>
 							<div class="app-menu-page-title">Home</div>
 						</div>
 					</div>
@@ -42,10 +46,12 @@
 					</div>
 					<div id="app-menu-settings" class="app-menu-list app-hidden">
 						<div id="page-settings" class="app-menu-page" onclick="APP.page.go('settings')">
-							<div class="app-menu-page-icon icon-settings"></div>
+							<div class="app-menu-page-icon app-icon-settings"></div>
 							<div class="app-menu-page-title">Settings</div>
 						</div>
 					</div>
+
+					<div id="app-copyright" class="app-hidden"></div>
 				</div>
 			</aside>
 			<section id="app-content"><div id="app-content-container"></div></section>

@@ -32,7 +32,6 @@ const APP = {
 				}
 			}
 			APP.page.reset();
-			APP.page.current = pageName;
 
 			if (!isEmpty(htmlPath)) {
 				const contentElement = document.getElementById('app-content-container');
@@ -40,6 +39,7 @@ const APP = {
 					const response = await fetch(htmlPath);
 					if (!response.ok) throw new Error(`Failed to load ${htmlPath}`);
 					contentElement.innerHTML = await response.text();
+					APP.page.current = pageName;
 				} catch (error) {
 					LOG.error('Error loading HTML:' + error);
 				}
@@ -97,11 +97,6 @@ const APP = {
 			if (contentElement) contentElement.innerHTML = '';
 
 			APP.page.current = '';
-		},
-		load: function () {
-			let pageName = STORAGE.get('app-page');
-			if (isEmpty(pageName)) pageName = 'home';
-			APP.page.go(pageName);
 		},
 	},
 	menu: {
@@ -210,7 +205,7 @@ const APP = {
 				deferredPrompt.prompt();
 				deferredPrompt.userChoice.then((choice) => {
 					if (choice.outcome === 'accepted') {
-						LOG.message('User installed the PWA');
+						// LOG.message('User installed the PWA');
 					}
 					deferredPrompt = null;
 				});
@@ -222,7 +217,7 @@ const APP = {
 			APP.pwa.handle();
 		},
 	},
-	init: async function () {
+	init: async function (callback) {
 		try {
 			// App Data (app.json)
 			const response = await fetch('/app.json');
@@ -256,6 +251,12 @@ const APP = {
 			document.getElementById('app-favicon').href = APP.data.icon;
 			document.getElementById('app-icon').src = APP.data.icon;
 
+			// Copywrite
+			if (!isEmpty(APP.data.copyright)) {
+				document.getElementById('app-copyright').innerHTML = APP.data.copyright;
+				document.getElementById('app-copyright').classList.remove('app-hidden');
+			}
+
 			APP.font.apply(fontName);
 			APP.page.go(pageName);
 
@@ -264,6 +265,8 @@ const APP = {
 			if (APP.data.allowInstall) {
 				APP.pwa.init();
 			}
+
+			callback();
 		} catch (error) {
 			LOG.error('Error loading HTML:' + error);
 		}
@@ -289,10 +292,10 @@ const STORAGE = {
 
 const LOG = {
 	message: function (message) {
-		console.log(message);
+		if (!isEmpty(message) && console) console.log(message);
 	},
 	error: function (message) {
-		console.error(message);
+		if (!isEmpty(message) && console) console.error(message);
 	},
 };
 
@@ -303,5 +306,10 @@ function isEmpty(value) {
 
 // Initialize PWA functionality
 document.addEventListener('DOMContentLoaded', () => {
-	APP.init();
+	APP.init(() => {
+		// Wait for the app to initialize // Fade out and remove cover screen
+		const cover = document.getElementById('app-cover');
+		cover.style.opacity = '0'; // Smooth fade-out
+		setTimeout(() => cover.remove(), 1000); // Remove after animation
+	});
 });

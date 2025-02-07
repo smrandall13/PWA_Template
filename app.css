@@ -50,6 +50,7 @@
 	--font-size-lg: 1.25rem;
 	--font-size-h2: 1.5rem;
 	--font-size-sm: 0.875rem;
+	--font-size-xsm: 0.75rem;
 	--line-height: 1.5;
 
 	/* Spacing */
@@ -107,7 +108,7 @@
 
 /* Scrollbar Handle on Hover */
 ::-webkit-scrollbar-thumb:hover {
-	background: #555;
+	background: var(--color-hover);
 }
 
 html,
@@ -135,7 +136,7 @@ body.font-roboto {
 	font-family: 'Roboto', sans-serif;
 }
 
-pre {
+.app-pre {
 	background: rgba(0, 0, 0, 0.5);
 	padding: 16px;
 	/* margin: 8px; */
@@ -153,7 +154,7 @@ a:hover {
 }
 
 /* Default Button Styles */
-button {
+.app-button {
 	background: var(--button-back);
 	color: var(--color-text);
 	border: none;
@@ -169,23 +170,12 @@ button {
 	gap: 4px;
 }
 
-button:hover {
+.app-button:hover {
 	background: var(--button-hover-back);
 }
 
-/* Utility Classes */
-.container {
-	width: var(--container-width);
-	max-width: var(--max-width);
-	margin: 0 auto;
-}
-
-.text-center {
-	text-align: center;
-}
-
 /* Header Styles */
-header {
+#app-header {
 	display: flex;
 	align-items: center;
 	justify-content: space-between;
@@ -196,15 +186,17 @@ header {
 	border-bottom: 2px solid var(--color-border);
 }
 
-.app-info {
+#app-info {
 	display: flex;
 	align-items: center;
 	gap: 8px;
 }
-
-.app-icon {
-	width: 32px;
-	height: 32px;
+#app-icon {
+	width: 40px;
+	height: 40px;
+	background-size: contain;
+	background-repeat: no-repeat;
+	background-position: center;
 }
 
 .app-name {
@@ -246,10 +238,9 @@ header {
 }
 
 /* Menu */
-#app-menu:not(.app-hidden),
 #app-menu-back:not(.app-hidden) {
-	position: absolute;
-	background: var(--secondary-back);
+	position: relative;
+	background: transparent;
 	color: var(--secondary-text);
 	width: 200px;
 	min-width: 200px;
@@ -264,8 +255,27 @@ header {
 	flex-direction: column;
 	justify-content: flex-start;
 }
-#app-menu {
+#app-menu:not(.app-hidden) {
 	z-index: 1;
+	position: absolute;
+	background: var(--secondary-back);
+	color: var(--secondary-text);
+	width: 192px;
+	min-width: 192px;
+	max-width: 192px;
+	margin: 4px;
+	height: calc(100vh - 68px);
+	min-height: calc(100vh - 68px);
+	max-height: calc(100vh - 68px);
+	transition: all 0.3s ease-in-out;
+	overflow: hidden;
+	flex: 0;
+	display: flex;
+	flex-direction: column;
+	justify-content: flex-start;
+	border-radius: var(--border-radius);
+	padding-bottom: 4px;
+	padding-left: 4px;
 }
 #app-menu-back:not(.app-hidden) {
 	position: relative;
@@ -316,9 +326,9 @@ header {
 	align-items: center;
 	justify-content: center;
 	padding: 8px;
-	width: 200px;
-	min-width: 200px;
-	max-width: 200px;
+	width: 192px;
+	min-width: 192px;
+	max-width: 192px;
 	flex-wrap: nowrap;
 	height: 40px;
 	min-height: 40px;
@@ -423,8 +433,49 @@ header {
 	width: 100%;
 }
 
+#app-menu:not(.app-menu-closed) #app-copyright:not(.app-hidden) {
+	font-size: var(--font-size-xsm);
+	text-align: center;
+	color: var(--color-muted);
+	margin: 8px auto 0 auto;
+}
+#app-menu.app-menu-closed #app-copyright {
+	display: none;
+}
+
+/* Cover */
+#app-cover {
+	position: fixed;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	background: var(--primary-back); /* Change color if needed */
+	color: var(--primary-text);
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+	z-index: 9999; /* Ensures it's on top */
+	transition: opacity 1s ease-out; /* Smooth fade-out */
+}
+
+#app-cover-image {
+	width: 200px;
+	height: 200px;
+	background-image: url(./icons/app-loadimg.png);
+	background-size: contain;
+	background-repeat: no-repeat;
+	background-position: center;
+}
+
+#app-cover-text {
+	font-size: var(--font-size-h2);
+	font-weight: bold;
+}
+
 /* Icons */
-.icon {
+.app-icon {
 	width: 20px;
 	height: 20px;
 	display: inline-block;
@@ -433,14 +484,14 @@ header {
 	background-position: center;
 }
 
-.icon-settings {
+.app-icon-settings {
 	background-image: url(/assets/images/settings-white.png);
 }
 
-.icon-download {
+.app-icon-download {
 	background-image: url(/assets/images/download-white.png);
 }
-.icon-home {
+.app-icon-home {
 	background-image: url(/assets/images/home-white.png);
 }
 
@@ -478,7 +529,7 @@ header {
 	#app-menu-content {
 		top: 40px;
 		padding-bottom: 40px;
-		padding-left: 4px;
+		padding-left: 0px;
 	}
 	#app-menu:not(.app-menu-closed) {
 		/* box-shadow: 0px 1px 5px rgba(0, 168, 120, 1); */
