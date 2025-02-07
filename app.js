@@ -1,6 +1,6 @@
-var APP = {
+const APP = {
 	data: {},
-	settings: {},
+	settings: { page: '' },
 	page: {
 		current: '',
 		go: async function (pageName) {
@@ -41,7 +41,7 @@ var APP = {
 					if (!response.ok) throw new Error(`Failed to load ${htmlPath}`);
 					contentElement.innerHTML = await response.text();
 				} catch (error) {
-					console.error('Error loading HTML:', error);
+					LOG.error('Error loading HTML:' + error);
 				}
 
 				// Load CSS
@@ -56,7 +56,7 @@ var APP = {
 						cssLink.classList.add('dynamic-style'); // Mark to remove later
 						document.head.appendChild(cssLink);
 					} catch (error) {
-						console.error('Error loading CSS:', error);
+						LOG.error('Error loading CSS:' + error);
 					}
 				}
 
@@ -72,7 +72,7 @@ var APP = {
 						script.defer = true;
 						document.body.appendChild(script);
 					} catch (error) {
-						console.error('Error loading JS:', error);
+						LOG.error('Error loading JS:' + error);
 					}
 				}
 
@@ -130,6 +130,16 @@ var APP = {
 		},
 		init: function () {
 			if (APP.data && APP.data.displayMenu === true) {
+				// Home
+				if (APP.data.displayHome) {
+					document.getElementById('app-menu-home').classList.remove('app-hidden');
+				}
+
+				// Settings
+				if (APP.data.displaySettings) {
+					document.getElementById('app-menu-settings').classList.remove('app-hidden');
+				}
+
 				// Pages
 				if (APP.data && APP.data.pages) {
 					let pageData = '';
@@ -149,19 +159,96 @@ var APP = {
 				// Toggle
 				const toggleButton = document.getElementById('app-menu-toggle');
 				toggleButton.addEventListener('click', () => {
-					this.toggle();
+					APP.menu.toggle();
 				});
 			} else {
-				document.getElementById('app-menu').classList.add('hidden');
-				document.getElementById('app-menu-back').classList.add('hidden');
+				document.getElementById('app-menu').classList.add('app-hidden');
+				document.getElementById('app-menu-back').classList.add('app-hidden');
 			}
+		},
+	},
+	font: {
+		key: 'app-font',
+		fonts: [
+			{ name: 'Nunito', value: 'Nunito.ttf', class: 'font-nunito' },
+			{ name: 'Playfair', value: 'Playfair.ttf', class: 'font-playfair' },
+			{ name: 'CourierPrime', value: 'CourierPrime.ttf', class: 'font-courierprime' },
+			{ name: 'Roboto', value: 'Roboto.ttf', class: 'font-roboto' },
+		],
+
+		apply: function (fontName) {
+			if (isEmpty(fontName)) {
+				fontName = APP.font.fonts[0].name;
+			}
+
+			const font = APP.font.fonts.find((f) => f.name === fontName);
+			if (!font) {
+				font = APP.font.fonts[0];
+			}
+			document.body.classList = font.class;
+			STORAGE.set(APP.font.key, font.name);
+		},
+	},
+	pwa: {
+		register: function () {
+			if ('serviceWorker' in navigator) {
+				navigator.serviceWorker.register('/service-worker.js');
+			}
+		},
+
+		handle: function () {
+			let deferredPrompt;
+			const installBtn = document.getElementById('app-install');
+
+			window.addEventListener('beforeinstallprompt', (e) => {
+				e.preventDefault();
+				deferredPrompt = e;
+				installBtn.classList.remove('app-hidden');
+			});
+
+			installBtn.addEventListener('click', () => {
+				deferredPrompt.prompt();
+				deferredPrompt.userChoice.then((choice) => {
+					if (choice.outcome === 'accepted') {
+						LOG.message('User installed the PWA');
+					}
+					deferredPrompt = null;
+				});
+			});
+		},
+
+		init: function () {
+			APP.pwa.register();
+			APP.pwa.handle();
 		},
 	},
 	init: async function () {
 		try {
+			// App Data (app.json)
 			const response = await fetch('/app.json');
 			if (!response.ok) throw new Error(`Failed to load ${htmlPath}`);
 			APP.data = await response.json();
+
+			// Check Page
+			let pageName = STORAGE.get('app-page');
+			if (isEmpty(pageName)) {
+				pageName = APP.data.defaultPage;
+			}
+			if (pageName === 'home' && APP.data.displayHome === false) {
+				pageName = '';
+			}
+			if (pageName !== 'home' && (isEmpty(pageName) || !APP.data.pages.find((p) => p.id === pageName))) {
+				pageName = APP.data.pages[0].id;
+			}
+
+			// Check Font
+			let fontName = STORAGE.get('app-font');
+			if (isEmpty(fontName)) {
+				fontName = APP.data.defaultFont;
+			}
+			if (isEmpty(fontName) || !APP.font.fonts.find((f) => f.name === fontName)) {
+				fontName = APP.font.fonts[0].name;
+			}
 
 			// App Info
 			document.getElementById('app-name').innerHTML = APP.data.name;
@@ -169,88 +256,52 @@ var APP = {
 			document.getElementById('app-favicon').href = APP.data.icon;
 			document.getElementById('app-icon').src = APP.data.icon;
 
-			FONT.init();
+			APP.font.apply(fontName);
+			APP.page.go(pageName);
+
 			APP.menu.init();
-			APP.page.load();
+
+			if (APP.data.allowInstall) {
+				APP.pwa.init();
+			}
 		} catch (error) {
-			console.error('Error loading HTML:', error);
+			LOG.error('Error loading HTML:' + error);
 		}
 	},
 };
 
-const PWA = {
-	registerServiceWorker: function () {
-		if ('serviceWorker' in navigator) {
-			navigator.serviceWorker.register('/service-worker.js');
+const STORAGE = {
+	get: function (key) {
+		let value = localStorage.getItem(key);
+		try {
+			return JSON.parse(value);
+		} catch (e) {
+			return value;
 		}
 	},
-
-	handleInstallPrompt: function () {
-		let deferredPrompt;
-		const installBtn = document.getElementById('app-install');
-
-		window.addEventListener('beforeinstallprompt', (e) => {
-			e.preventDefault();
-			deferredPrompt = e;
-			installBtn.hidden = false;
-		});
-
-		installBtn.addEventListener('click', () => {
-			deferredPrompt.prompt();
-			deferredPrompt.userChoice.then((choice) => {
-				if (choice.outcome === 'accepted') {
-					console.log('User installed the PWA');
-				}
-				deferredPrompt = null;
-			});
-		});
+	set: function (key, value) {
+		localStorage.setItem(key, JSON.stringify(value));
 	},
-
-	init: function () {
-		this.registerServiceWorker();
-		this.handleInstallPrompt();
+	reset: function (key) {
+		localStorage.removeItem(key);
 	},
 };
 
-const FONT = {
-	key: 'app-font',
-	fonts: [
-		{ name: 'Nunito', value: 'Nunito.ttf', class: 'font-nunito' },
-		{ name: 'Playfair', value: 'Playfair.ttf', class: 'font-playfair' },
-		{ name: 'CourierPrime', value: 'CourierPrime.ttf', class: 'font-courierprime' },
-		{ name: 'Roboto', value: 'Roboto.ttf', class: 'font-roboto' },
-	],
-
-	apply: function (fontName) {
-		if (isEmpty(fontName)) {
-			fontName = this.fonts[0].name;
-		}
-
-		const font = this.fonts.find((f) => f.name === fontName);
-		if (!font) {
-			font = this.fonts[0];
-		}
-		document.body.classList = font.class;
-		STORAGE.set(FONT.key, font.name);
+const LOG = {
+	message: function (message) {
+		console.log(message);
 	},
-
-	load: function () {
-		let savedFont = STORAGE.get(FONT.key);
-		if (isEmpty(savedFont)) {
-			savedFont = this.fonts[0].name;
-		}
-		if (savedFont) {
-			this.apply(savedFont);
-		}
-	},
-
-	init: function () {
-		this.load();
+	error: function (message) {
+		console.error(message);
 	},
 };
+
+// Functions
+function isEmpty(value) {
+	return value === undefined || value === null || (typeof value === 'string' && value.trim() === '') || (Array.isArray(value) && value.length === 0) || (typeof value === 'object' && Object.keys(value).length === 0);
+}
 
 // Initialize PWA functionality
 document.addEventListener('DOMContentLoaded', () => {
-	PWA.init();
 	APP.init();
 });

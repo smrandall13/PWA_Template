@@ -6,11 +6,8 @@
 		<meta id="app-theme-color" name="theme-color" content="#121c2d" />
 		<link id="app-favicon" rel="icon" href="icons/app-icon.png" />
 		<link rel="manifest" href="manifest.json" />
-		<link rel="stylesheet" href="root.css" />
 		<link rel="stylesheet" href="app.css" />
-		<link rel="stylesheet" href="icons.css" />
 		<title id="app-title">PWA Template</title>
-		<script src="support.js"></script>
 	</head>
 	<body>
 		<header>
@@ -21,7 +18,7 @@
 			<nav class="app-nav">
 				<!-- Optional Nav Items -->
 			</nav>
-			<button id="app-install" class="app-install" hidden>
+			<button id="app-install" class="app-install app-hidden">
 				<div class="icon icon-download"></div>
 				Install
 			</button>
@@ -34,7 +31,7 @@
 					<div id="app-menu-toggle" class="menu-toggle"><div></div></div>
 				</h2>
 				<div id="app-menu-content">
-					<div class="app-menu-list">
+					<div id="app-menu-home" class="app-menu-list app-hidden">
 						<div id="page-home" class="app-menu-page active" onclick="APP.page.go('home')">
 							<div class="app-menu-page-icon icon-home"></div>
 							<div class="app-menu-page-title">Home</div>
@@ -43,7 +40,7 @@
 					<div id="app-page-list" class="app-menu-list">
 						<!-- Dynamically added saved content -->
 					</div>
-					<div class="app-menu-list app-menu-settings">
+					<div id="app-menu-settings" class="app-menu-list app-hidden">
 						<div id="page-settings" class="app-menu-page" onclick="APP.page.go('settings')">
 							<div class="app-menu-page-icon icon-settings"></div>
 							<div class="app-menu-page-title">Settings</div>

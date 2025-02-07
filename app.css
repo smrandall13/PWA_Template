@@ -1,4 +1,93 @@
-/* Core CSS - Reset and Base Styles */
+/* Import Playful Yet Readable Font */
+@font-face {
+	font-family: 'Playfair';
+	src: url('/assets/fonts/Playfair.ttf') format('truetype');
+	font-weight: 400;
+	font-style: normal;
+}
+@font-face {
+	font-family: 'Nunito';
+	src: url('/assets/fonts/Nunito.ttf') format('truetype');
+	font-weight: 400;
+	font-style: normal;
+}
+@font-face {
+	font-family: 'Courier Prime';
+	src: url('/assets/fonts/CourierPrime.ttf') format('truetype');
+	font-weight: 400;
+	font-style: normal;
+}
+@font-face {
+	font-family: 'Roboto';
+	src: url('/assets/fonts/Roboto.ttf') format('truetype');
+	font-weight: 400;
+	font-style: normal;
+}
+
+:root {
+	/* Color Palette */
+	--primary-back: #121c2d;
+	--primary-text: #eaeaea;
+
+	--secondary-back: #1e2a3a;
+	--secondary-text: #eaeaea;
+
+	--color-hover: rgba(0, 168, 120, 0.5);
+	--color-accent: #00a878;
+	--color-highlight: #ffc700;
+	--color-line: #0678ff;
+	--color-text: #eaeaea;
+	--color-border: #00a878;
+
+	--color-muted: #a0a0a0;
+
+	--button-back: var(--color-accent);
+	--button-hover-back: #008f6b;
+
+	/* Typography */
+	--font-family: 'Nunito', sans-serif;
+	--font-size-base: 1rem;
+	--font-size-lg: 1.25rem;
+	--font-size-h2: 1.5rem;
+	--font-size-sm: 0.875rem;
+	--line-height: 1.5;
+
+	/* Spacing */
+	--spacing-xs: 0.5rem;
+	--spacing-sm: 1rem;
+	--spacing-md: 1.5rem;
+	--spacing-lg: 2rem;
+
+	/* Borders & Radius */
+	--border-color: #2c3e50;
+	--border: 1px solid var(--border-color);
+	--border-radius: 4px;
+	--border-radius-lg: 8px;
+
+	/* Shadows */
+	--shadow-sm: 0px 2px 4px rgba(0, 0, 0, 0.1);
+	--shadow-md: 0px 4px 8px rgba(0, 0, 0, 0.15);
+	--shadow-lg: 0px 6px 12px rgba(0, 0, 0, 0.2);
+
+	/* Button Styles */
+	--button-padding: 0.75em 1.5em;
+	--button-font-size: 1rem;
+
+	/* Layout */
+	--container-width: 90%;
+	--container-max: 1200px;
+
+	/* Menu */
+	--menu-toggle-color: #eaeaea;
+}
+
+/* Reset Default Browser Styles */
+* {
+	margin: 0;
+	padding: 0;
+	box-sizing: border-box;
+	position: relative;
+}
 /* Scrollbar width */
 ::-webkit-scrollbar {
 	width: 10px;
@@ -19,6 +108,31 @@
 /* Scrollbar Handle on Hover */
 ::-webkit-scrollbar-thumb:hover {
 	background: #555;
+}
+
+html,
+body {
+	background-color: var(--primary-back);
+	color: var(--primary-text);
+	line-height: var(--line-height);
+	font-size: var(--font-size-base);
+	font-family: var(--font-family);
+}
+
+body.font-nunito {
+	font-family: 'Nunito', sans-serif;
+}
+
+body.font-playfair {
+	font-family: 'Playfair', serif;
+}
+
+body.font-courier-prime {
+	font-family: 'Courier Prime', monospace;
+}
+
+body.font-roboto {
+	font-family: 'Roboto', sans-serif;
 }
 
 pre {
@@ -117,7 +231,7 @@ header {
 	cursor: pointer;
 	transition: background 0.3s ease-in-out;
 }
-.app-install[hidden] {
+.app-install.app-hidden {
 	display: none;
 }
 
@@ -132,8 +246,8 @@ header {
 }
 
 /* Menu */
-#app-menu:not(.hidden),
-#app-menu-back:not(.hidden) {
+#app-menu:not(.app-hidden),
+#app-menu-back:not(.app-hidden) {
 	position: absolute;
 	background: var(--secondary-back);
 	color: var(--secondary-text);
@@ -153,18 +267,18 @@ header {
 #app-menu {
 	z-index: 1;
 }
-#app-menu-back:not(.hidden) {
+#app-menu-back:not(.app-hidden) {
 	position: relative;
 	background: transparent;
 }
-#app-menu.app-menu-closed:not(.hidden),
-#app-menu-back.app-menu-closed:not(.hidden) {
+#app-menu.app-menu-closed:not(.app-hidden),
+#app-menu-back.app-menu-closed:not(.app-hidden) {
 	width: 44px;
 	min-width: 44px;
 	max-width: 44px;
 }
 
-#app-menu:not(.hidden) #app-menu-toggle {
+#app-menu:not(.app-hidden) #app-menu-toggle {
 	width: 20px;
 	height: 25px;
 	margin-right: 5px;
@@ -258,18 +372,21 @@ header {
 	max-width: 100%;
 	justify-content: flex-start;
 	cursor: pointer;
+	border: 1px solid transparent;
 	border-top-left-radius: var(--border-radius);
 	border-bottom-left-radius: var(--border-radius);
 	padding: 0 4px;
 	transition: background 0.3s ease;
 	text-shadow: 0px 0x 2px rgba(0, 0, 0, 0.5);
 }
-.app-menu-page:hover,
+.app-menu-page:hover {
+	background: var(--color-hover);
+}
 .app-menu-page.active,
 .app-menu-page.active {
 	background: var(--color-accent);
 }
-.app-menu-settings {
+#app-menu-settings {
 	flex: 0;
 	margin-top: auto;
 	flex-shrink: 0;
@@ -298,6 +415,7 @@ header {
 	flex-direction: column;
 	justify-content: flex-start;
 	align-items: center;
+	margin: 4px;
 }
 #app-content-container {
 	max-width: 1000px;
@@ -305,8 +423,29 @@ header {
 	width: 100%;
 }
 
+/* Icons */
+.icon {
+	width: 20px;
+	height: 20px;
+	display: inline-block;
+	background-size: contain;
+	background-repeat: no-repeat;
+	background-position: center;
+}
+
+.icon-settings {
+	background-image: url(/assets/images/settings-white.png);
+}
+
+.icon-download {
+	background-image: url(/assets/images/download-white.png);
+}
+.icon-home {
+	background-image: url(/assets/images/home-white.png);
+}
+
 /* Support */
-.hidden {
+.app-hidden {
 	display: none;
 	visibility: hidden;
 	width: 0;
@@ -316,18 +455,19 @@ header {
 	min-height: 0;
 	max-height: none;
 }
+
 /* Responsive Behavior */
 @media (max-width: 1199px) {
-	#app-menu-back:not(.hidden),
-	#app-menu-back.app-menu-closed:not(.hidden) {
+	#app-menu-back:not(.app-hidden),
+	#app-menu-back.app-menu-closed:not(.app-hidden) {
 		width: 40px;
 		min-width: 40px;
 		max-width: 40px;
 	}
-	#app-menu:not(.hidden) {
+	#app-menu:not(.app-hidden) {
 		border-right: 2px solid var(--color-border);
 	}
-	#app-menu:not(.hidden) #app-menu-toggle {
+	#app-menu:not(.app-hidden) #app-menu-toggle {
 		display: inline-block;
 	}
 	#app-menu-header {
@@ -348,15 +488,15 @@ header {
 	}
 }
 @media (min-width: 1200px) {
-	#app-menu:not(.hidden),
-	#app-menu-back:not(.hidden),
-	#app-menu.app-menu-closed:not(.hidden),
-	#app-menu-back.app-menu-closed:not(.hidden) {
+	#app-menu:not(.app-hidden),
+	#app-menu-back:not(.app-hidden),
+	#app-menu.app-menu-closed:not(.app-hidden),
+	#app-menu-back.app-menu-closed:not(.app-hidden) {
 		width: 200px;
 		min-width: 200px;
 		max-width: 200px;
 	}
-	#app-menu:not(.hidden) #app-menu-toggle {
+	#app-menu:not(.app-hidden) #app-menu-toggle {
 		display: none;
 		padding-left: 8px;
 	}
