@@ -1,6 +1,6 @@
 const APP = {
 	data: {},
-	settings: { page: '' },
+	settings: { page: '', theme: '', font: '' },
 	page: {
 		current: '',
 		go: async function (pageName) {
@@ -172,6 +172,7 @@ const APP = {
 		],
 
 		apply: function (fontName) {
+			console.log('F1', fontName);
 			if (isEmpty(fontName)) {
 				fontName = APP.font.fonts[0].name;
 			}
@@ -180,41 +181,72 @@ const APP = {
 			if (!font) {
 				font = APP.font.fonts[0];
 			}
-			document.body.classList = font.class;
+
+			APP.font.fonts.forEach((f) => {
+				document.body.classList.remove(f.class);
+			});
+
+			document.body.classList.add(font.class);
+			APP.settings.font = font.name;
 			STORAGE.set(APP.font.key, font.name);
 		},
 	},
+	theme: {
+		key: 'app-theme',
+		themes: [
+			{ name: 'Light', class: 'theme-light' },
+			{ name: 'Dark', class: 'theme-dark' },
+		],
+
+		apply: function (themeName) {
+			if (isEmpty(themeName)) {
+				themeName = APP.theme.themes[0].name;
+			}
+
+			const theme = APP.theme.themes.find((t) => t.name === themeName);
+			if (!theme) {
+				theme = APP.theme.themes[0];
+			}
+
+			APP.theme.themes.forEach((t) => {
+				document.body.classList.remove(t.class);
+			});
+			document.body.classList.add(theme.class);
+			APP.settings.theme = theme.name;
+			STORAGE.set(APP.theme.key, theme.name);
+		},
+	},
 	pwa: {
+		prompt: null,
 		register: function () {
 			if ('serviceWorker' in navigator) {
 				navigator.serviceWorker.register('/service-worker.js');
+				APP.pwa.handle();
 			}
 		},
-
 		handle: function () {
-			let deferredPrompt;
 			const installBtn = document.getElementById('app-install');
 
 			window.addEventListener('beforeinstallprompt', (e) => {
 				e.preventDefault();
-				deferredPrompt = e;
+				APP.pwa.prompt = e;
 				installBtn.classList.remove('app-hidden');
 			});
 
 			installBtn.addEventListener('click', () => {
-				deferredPrompt.prompt();
-				deferredPrompt.userChoice.then((choice) => {
-					if (choice.outcome === 'accepted') {
-						// LOG.message('User installed the PWA');
-					}
-					deferredPrompt = null;
+				APP.pwa.prompt.prompt();
+				APP.pwa.prompt.userChoice.then((choice) => {
+					APP.pwa.prompt = null;
 				});
 			});
 		},
-
+		install: function () {},
+		installed: function () {
+			return window.matchMedia('(display-mode: standalone)').matches;
+		},
 		init: function () {
 			APP.pwa.register();
-			APP.pwa.handle();
+			APP.settings.installed = APP.pwa.installed();
 		},
 	},
 	init: async function (callback) {
@@ -232,7 +264,10 @@ const APP = {
 			if (pageName === 'home' && APP.data.displayHome === false) {
 				pageName = '';
 			}
-			if (pageName !== 'home' && (isEmpty(pageName) || !APP.data.pages.find((p) => p.id === pageName))) {
+			if (pageName === 'settings' && APP.data.displaySettings === false) {
+				pageName = '';
+			}
+			if (pageName !== 'home' && pageName !== 'settings' && (isEmpty(pageName) || !APP.data.pages.find((p) => p.id === pageName))) {
 				pageName = APP.data.pages[0].id;
 			}
 
@@ -243,6 +278,15 @@ const APP = {
 			}
 			if (isEmpty(fontName) || !APP.font.fonts.find((f) => f.name === fontName)) {
 				fontName = APP.font.fonts[0].name;
+			}
+
+			// Check Theme
+			let themeName = STORAGE.get('app-theme');
+			if (isEmpty(themeName)) {
+				themeName = APP.data.defaultTheme;
+			}
+			if (isEmpty(themeName) || !APP.theme.themes.find((f) => f.name === themeName)) {
+				themeName = APP.theme.themes[0].name;
 			}
 
 			// App Info
@@ -258,6 +302,7 @@ const APP = {
 			}
 
 			APP.font.apply(fontName);
+			APP.theme.apply(themeName);
 			APP.page.go(pageName);
 
 			APP.menu.init();

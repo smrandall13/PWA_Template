@@ -26,11 +26,14 @@
 
 :root {
 	/* Color Palette */
-	--primary-back: #121c2d;
-	--primary-text: #eaeaea;
+	--theme-dark-back: #121c2d;
+	--theme-dark-text: #eaeaea;
 
-	--secondary-back: #1e2a3a;
-	--secondary-text: #eaeaea;
+	--theme-light-back: #eaeaea;
+	--theme-light-text: #121c2d;
+
+	--menu-back: rgba(0, 0, 0, 0.15);
+	/* --secondary-text: #eaeaea; */
 
 	--color-hover: rgba(0, 168, 120, 0.5);
 	--color-accent: #00a878;
@@ -73,10 +76,20 @@
 	/* Button Styles */
 	--button-padding: 0.75em 1.5em;
 	--button-font-size: 1rem;
+	--button-caution-back: #f44336;
+	--button-caution-hover-back: #d32f2f;
+	--button-caution-color: #fff;
 
 	/* Layout */
 	--container-width: 90%;
 	--container-max: 1200px;
+
+	/* Input */
+	--input-dark-back: #1e2a3a;
+	--input-dark-color: #eaeaea;
+
+	--input-light-back: #eaeaea;
+	--input-light-color: #121c2d;
 
 	/* Menu */
 	--menu-toggle-color: #eaeaea;
@@ -111,10 +124,9 @@
 	background: var(--color-hover);
 }
 
-html,
 body {
-	background-color: var(--primary-back);
-	color: var(--primary-text);
+	background-color: var(--theme-dark-back);
+	color: var(--theme-dark-text);
 	line-height: var(--line-height);
 	font-size: var(--font-size-base);
 	font-family: var(--font-family);
@@ -136,8 +148,13 @@ body.font-roboto {
 	font-family: 'Roboto', sans-serif;
 }
 
+body.theme-light {
+	background-color: var(--theme-light-back);
+	color: var(--theme-light-text);
+}
+
 .app-pre {
-	background: rgba(0, 0, 0, 0.5);
+	background: var(--menu-back);
 	padding: 16px;
 	/* margin: 8px; */
 	border-radius: var(--border-radius);
@@ -151,6 +168,31 @@ a {
 
 a:hover {
 	color: var(--color-highlight);
+}
+
+h1 {
+	margin-bottom: 8px;
+}
+
+input,
+select,
+select option textarea {
+	background: var(--input-dark-back);
+	color: var(--input-dark-text);
+	padding: 4px;
+	line-height: 1.5rem;
+	border-radius: var(--border-radius);
+	display: block;
+	margin: 10px 0;
+	width: 100%;
+	padding: 8px;
+}
+
+body.theme-light input,
+body.theme-light select,
+body.theme-light select option textarea {
+	background: var(--input-light-back);
+	color: var(--input-light-text);
 }
 
 /* Default Button Styles */
@@ -174,13 +216,20 @@ a:hover {
 	background: var(--button-hover-back);
 }
 
+.app-button-caution {
+	background: var(--button-caution-back);
+	color: var(--button-caution-color);
+}
+
+.app-button-caution:hover {
+	background: var(--button-caution-hover-back);
+}
+
 /* Header Styles */
 #app-header {
 	display: flex;
 	align-items: center;
 	justify-content: space-between;
-	background: var(--primary-back);
-	color: var(--primary-text);
 	height: 60px;
 	padding: 0 16px;
 	border-bottom: 2px solid var(--color-border);
@@ -241,7 +290,6 @@ a:hover {
 #app-menu-back:not(.app-hidden) {
 	position: relative;
 	background: transparent;
-	color: var(--secondary-text);
 	width: 200px;
 	min-width: 200px;
 	max-width: 200px;
@@ -258,8 +306,8 @@ a:hover {
 #app-menu:not(.app-hidden) {
 	z-index: 1;
 	position: absolute;
-	background: var(--secondary-back);
-	color: var(--secondary-text);
+	background: var(--menu-back);
+	/* color: var(--menu-text); */
 	width: 192px;
 	min-width: 192px;
 	max-width: 192px;
@@ -450,8 +498,8 @@ a:hover {
 	left: 0;
 	width: 100%;
 	height: 100%;
-	background: var(--primary-back); /* Change color if needed */
-	color: var(--primary-text);
+	background: var(--theme-dark-back); /* Change color if needed */
+	color: var(--theme-dark-text);
 	display: flex;
 	flex-direction: column;
 	justify-content: center;

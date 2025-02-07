@@ -3,7 +3,7 @@
 	"icon": "/icons/app-icon.png",
 	"version": "1.0.0",
 	"defaultPage": "home",
-	"defaultTheme": "dark",
+	"defaultTheme": "Dark",
 	"defaultFont": "Nunito",
 
 	"copyright": "&copy; 2025 Software Response",
