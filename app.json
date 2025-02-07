@@ -1,7 +1,7 @@
 {
 	"name": "App Template",
 	"icon": "/icons/app-icon.png",
-	"version": "1.0.0",
+	"version": "1.0.1",
 	"defaultPage": "home",
 	"defaultTheme": "Dark",
 	"defaultFont": "Nunito",

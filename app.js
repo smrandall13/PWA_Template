@@ -218,7 +218,7 @@ const APP = {
 	},
 	pwa: {
 		prompt: null,
-		register: function () {
+		init: function () {
 			if ('serviceWorker' in navigator) {
 				navigator.serviceWorker.register('/service-worker.js');
 				APP.pwa.handle();
@@ -230,24 +230,33 @@ const APP = {
 			window.addEventListener('beforeinstallprompt', (e) => {
 				e.preventDefault();
 				APP.pwa.prompt = e;
-				installBtn.classList.remove('app-hidden');
 			});
 
 			installBtn.addEventListener('click', () => {
 				APP.pwa.prompt.prompt();
 				APP.pwa.prompt.userChoice.then((choice) => {
 					APP.pwa.prompt = null;
+					location.reload();
 				});
 			});
+
+			setTimeout(APP.pwa.installed, 500); // Check if the app is installed
 		},
-		install: function () {},
 		installed: function () {
-			return window.matchMedia('(display-mode: standalone)').matches;
+			const isInstalled = window.matchMedia('(display-mode: standalone)').matches;
+			APP.settings.installed = isInstalled;
+			const installBtn = document.getElementById('app-install');
+			if (isInstalled) {
+				installBtn.classList.add('app-hidden');
+			} else {
+				installBtn.classList.remove('app-hidden');
+			}
 		},
-		init: function () {
-			APP.pwa.register();
-			APP.settings.installed = APP.pwa.installed();
-		},
+	},
+	reset: function () {
+		localStorage.clear();
+		location.reload();
+		navigator.serviceWorker.getRegistrations();
 	},
 	init: async function (callback) {
 		try {
@@ -255,6 +264,39 @@ const APP = {
 			const response = await fetch('/app.json');
 			if (!response.ok) throw new Error(`Failed to load ${htmlPath}`);
 			APP.data = await response.json();
+
+			// Check Font
+			let fontName = STORAGE.get('app-font');
+			if (isEmpty(fontName)) {
+				fontName = APP.data.defaultFont;
+			}
+			if (isEmpty(fontName) || !APP.font.fonts.find((f) => f.name === fontName)) {
+				fontName = APP.font.fonts[0].name;
+			}
+			APP.font.apply(fontName);
+
+			// Check Theme
+			let themeName = STORAGE.get('app-theme');
+			if (isEmpty(themeName)) {
+				themeName = APP.data.defaultTheme;
+			}
+			if (isEmpty(themeName) || !APP.theme.themes.find((f) => f.name === themeName)) {
+				themeName = APP.theme.themes[0].name;
+			}
+			APP.theme.apply(themeName);
+
+			// App Info
+			document.getElementById('app-name').innerHTML = APP.data.name;
+			document.getElementById('app-title').innerHTML = APP.data.name;
+			document.getElementById('app-favicon').href = APP.data.icon;
+			document.getElementById('app-icon').src = APP.data.icon;
+
+			// Copywrite
+			if (!isEmpty(APP.data.copyright)) {
+				const copyright = document.getElementById('app-copyright');
+				copyright.innerHTML = APP.data.copyright;
+				copyright.classList.remove('app-hidden');
+			}
 
 			// Check Page
 			let pageName = STORAGE.get('app-page');
@@ -270,43 +312,12 @@ const APP = {
 			if (pageName !== 'home' && pageName !== 'settings' && (isEmpty(pageName) || !APP.data.pages.find((p) => p.id === pageName))) {
 				pageName = APP.data.pages[0].id;
 			}
-
-			// Check Font
-			let fontName = STORAGE.get('app-font');
-			if (isEmpty(fontName)) {
-				fontName = APP.data.defaultFont;
-			}
-			if (isEmpty(fontName) || !APP.font.fonts.find((f) => f.name === fontName)) {
-				fontName = APP.font.fonts[0].name;
-			}
-
-			// Check Theme
-			let themeName = STORAGE.get('app-theme');
-			if (isEmpty(themeName)) {
-				themeName = APP.data.defaultTheme;
-			}
-			if (isEmpty(themeName) || !APP.theme.themes.find((f) => f.name === themeName)) {
-				themeName = APP.theme.themes[0].name;
-			}
-
-			// App Info
-			document.getElementById('app-name').innerHTML = APP.data.name;
-			document.getElementById('app-title').innerHTML = APP.data.name;
-			document.getElementById('app-favicon').href = APP.data.icon;
-			document.getElementById('app-icon').src = APP.data.icon;
-
-			// Copywrite
-			if (!isEmpty(APP.data.copyright)) {
-				document.getElementById('app-copyright').innerHTML = APP.data.copyright;
-				document.getElementById('app-copyright').classList.remove('app-hidden');
-			}
-
-			APP.font.apply(fontName);
-			APP.theme.apply(themeName);
 			APP.page.go(pageName);
 
+			// Menu Initialize
 			APP.menu.init();
 
+			// PWA Initialize
 			if (APP.data.allowInstall) {
 				APP.pwa.init();
 			}
@@ -346,7 +357,14 @@ const LOG = {
 
 // Functions
 function isEmpty(value) {
-	return value === undefined || value === null || (typeof value === 'string' && value.trim() === '') || (Array.isArray(value) && value.length === 0) || (typeof value === 'object' && Object.keys(value).length === 0);
+	let varEmpty = false;
+	if (value === undefined || value === null || (typeof value === 'string' && value.trim() === '')) {
+		varEmpty = true;
+	} else if ((Array.isArray(value) && value.length === 0) || (typeof value === 'object' && Object.keys(value).length === 0)) {
+		varEmpty = true;
+	}
+
+	return varEmpty;
 }
 
 // Initialize PWA functionality

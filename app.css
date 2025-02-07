@@ -195,6 +195,27 @@ body.theme-light select option textarea {
 	color: var(--input-light-text);
 }
 
+.app-block {
+	display: block;
+	margin: 8px 0;
+	width: 100%;
+	min-width: 100%;
+	max-width: 100%;
+	height: auto;
+	text-align: center;
+	display: flex;
+	flex-direction: column;
+	justify-content: flex-start;
+	align-items: center;
+}
+.app-left {
+	text-align: left;
+	align-items: start;
+}
+.app-right {
+	text-align: right;
+	align-items: end;
+}
 /* Default Button Styles */
 .app-button {
 	background: var(--button-back);
@@ -210,6 +231,7 @@ body.theme-light select option textarea {
 	align-items: center;
 	justify-content: center;
 	gap: 4px;
+	flex: 0;
 }
 
 .app-button:hover {
@@ -479,6 +501,10 @@ body.theme-light select option textarea {
 	max-width: 1000px;
 	min-width: 300px;
 	width: 100%;
+	display: flex;
+	flex-direction: column;
+	justify-content: flex-start;
+	align-items: center;
 }
 
 #app-menu:not(.app-menu-closed) #app-copyright:not(.app-hidden) {

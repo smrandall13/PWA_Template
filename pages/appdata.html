@@ -1,54 +1,56 @@
-<h1>App Data</h1>
-<p>This information serves to inform you on how to edit this app and add your own pages.</p>
-<br />
-<h2>app.json</h2>
-<p>The app.json file is used to configure the app. You can change the App Name, Icon, version, theme, font, and add custom Pages.</p>
-<br />
-<p>
-	The pages is an array of objects with the following properties:<br />
-	- id: The id of the page<br />
-	- name: The name of the page that appears on the menu<br />
-	- icon: [optional] The icon of the page that appears on the menu<br />
-	- html: The html Structure of the page<br />
-	- style: [optional] The style of the page<br />
-	- script: [optional] The script of the page<br />
-</p>
-<br />
-<pre class="app-pre"><code>
-	{
-		"name": "App Template",
-		"icon": "/icons/app-icon.png",
-		"version": "1.0.0",
-		"defaultPage": "home",
-		"defaultTheme": "dark",
-		"defaultFont": "Nunito",
+<div class="app-left">
+	<h1>App Data</h1>
+	<p>This information serves to inform you on how to edit this app and add your own pages.</p>
+	<br />
+	<h2>app.json</h2>
+	<p>The app.json file is used to configure the app. You can change the App Name, Icon, version, theme, font, and add custom Pages.</p>
+	<br />
+	<p>
+		The pages is an array of objects with the following properties:<br />
+		- id: The id of the page<br />
+		- name: The name of the page that appears on the menu<br />
+		- icon: [optional] The icon of the page that appears on the menu<br />
+		- html: The html Structure of the page<br />
+		- style: [optional] The style of the page<br />
+		- script: [optional] The script of the page<br />
+	</p>
+	<br />
+	<pre class="app-pre"><code>
+		{
+			"name": "App Template",
+			"icon": "/icons/app-icon.png",
+			"version": "1.0.0",
+			"defaultPage": "home",
+			"defaultTheme": "dark",
+			"defaultFont": "Nunito",
 
-		"displayMenu": true,
-		"displayHome": true,
-		"displaySettings": true,
+			"displayMenu": true,
+			"displayHome": true,
+			"displaySettings": true,
 
-		"allowInstall": true,
+			"allowInstall": true,
 
-		"pages": [
-			{
-				"id": "appinfo",
-				"name": "App Info",
-				"html": "/pages/appinfo.html",
-				"style": "/pages/appinfo.css",
-				"script": "/pages/appinfo.js",
-				"icon": "/pages/question-white.png"
-			},
-			{
-				"id": "appdata",
-				"name": "App Data",
-				"html": "/pages/appdata.html",
-				"style": "/pages/appdata.css",
-				"script": "/pages/appdata.js"
-			}
-		]
-	}
+			"pages": [
+				{
+					"id": "appinfo",
+					"name": "App Info",
+					"html": "/pages/appinfo.html",
+					"style": "/pages/appinfo.css",
+					"script": "/pages/appinfo.js",
+					"icon": "/pages/question-white.png"
+				},
+				{
+					"id": "appdata",
+					"name": "App Data",
+					"html": "/pages/appdata.html",
+					"style": "/pages/appdata.css",
+					"script": "/pages/appdata.js"
+				}
+			]
+		}
 
-</code></pre>
-<br />
+	</code></pre>
+	<br />
 
-If you would like your page assets to be available offline you can add them to the ASSETS_CUSTOM array in the service-worker.js file.
+	If you would like your page assets to be available offline you can add them to the ASSETS_CUSTOM array in the service-worker.js file.
+</div>

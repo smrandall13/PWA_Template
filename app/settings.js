@@ -31,8 +31,7 @@ var SETTINGS = {
 		// Reset App
 		document.getElementById('reset-app').addEventListener('click', () => {
 			if (confirm('Are you sure you want to reset the app?')) {
-				localStorage.clear();
-				location.reload();
+				APP.reset();
 			}
 		});
 
@@ -51,6 +50,13 @@ var SETTINGS = {
 			} else {
 				document.getElementById('app-install-info').classList.remove('app-hidden');
 			}
+		}
+
+		// Copyright
+		if (!isEmpty(APP.data.copyright)) {
+			const copyright = document.getElementById('settings-copyright');
+			copyright.classList.remove('app-hidden');
+			copyright.innerHTML = APP.data.copyright;
 		}
 	},
 };
