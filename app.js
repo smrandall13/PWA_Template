@@ -1,3 +1,4 @@
+const appContent = document.getElementById('app-content');
 const APP = {
 	data: {},
 	settings: { page: '', theme: '', font: '' },
@@ -34,6 +35,7 @@ const APP = {
 			APP.page.reset();
 
 			if (!isEmpty(htmlPath)) {
+				console.log('P3', pageName, htmlPath);
 				const contentElement = document.getElementById('app-content-container');
 				try {
 					const response = await fetch(htmlPath);
@@ -79,8 +81,10 @@ const APP = {
 				STORAGE.set('app-page', pageName);
 			}
 
-			document.getElementById('page-' + pageName).classList.add('active'); // Add Active Class to Page On Menu
-			APP.menu.toggle(2); // Close Menu
+			if (APP.data.displayMenu === true) {
+				document.getElementById('page-' + pageName).classList.add('active'); // Add Active Class to Page On Menu
+				APP.menu.toggle(2); // Close Menu
+			}
 		},
 		reset: function () {
 			// Remove previous styles
@@ -172,7 +176,6 @@ const APP = {
 		],
 
 		apply: function (fontName) {
-			console.log('F1', fontName);
 			if (isEmpty(fontName)) {
 				fontName = APP.font.fonts[0].name;
 			}
@@ -225,17 +228,21 @@ const APP = {
 			}
 		},
 		handle: function () {
+			let deferredPrompt;
 			const installBtn = document.getElementById('app-install');
 
 			window.addEventListener('beforeinstallprompt', (e) => {
 				e.preventDefault();
-				APP.pwa.prompt = e;
+				deferredPrompt = e;
 			});
 
 			installBtn.addEventListener('click', () => {
-				APP.pwa.prompt.prompt();
-				APP.pwa.prompt.userChoice.then((choice) => {
-					APP.pwa.prompt = null;
+				deferredPrompt.prompt(); // Show Install Banner
+				deferredPrompt.userChoice.then((choice) => {
+					if (choice.outcome === 'accepted') {
+						APP.pwa.installed();
+					}
+					deferredPrompt = null;
 					location.reload();
 				});
 			});
@@ -312,6 +319,7 @@ const APP = {
 			if (pageName !== 'home' && pageName !== 'settings' && (isEmpty(pageName) || !APP.data.pages.find((p) => p.id === pageName))) {
 				pageName = APP.data.pages[0].id;
 			}
+
 			APP.page.go(pageName);
 
 			// Menu Initialize
@@ -326,6 +334,76 @@ const APP = {
 		} catch (error) {
 			LOG.error('Error loading HTML:' + error);
 		}
+	},
+};
+
+const MESSAGE = {
+	show: function (title = '', message = '', className = '', callback = null) {
+		if (document.getElementById('app-message')) {
+			document.getElementById('app-message').remove();
+		}
+
+		if (!isEmpty(message)) {
+			// Message Back
+			const appMessageBack = document.createElement('div');
+			appMessageBack.id = 'app-message-back';
+			appMessageBack.style.opacity = 0;
+			appContent.appendChild(appMessageBack);
+
+			const appMessage = document.createElement('div');
+			appMessage.id = 'app-message';
+			appMessage.style.opacity = 0;
+			if (!isEmpty(className)) {
+				appMessage.classList.add(className);
+			}
+
+			if (isEmpty(title)) {
+				title = '';
+			}
+			appMessage.innerHTML = `<div id="app-message-title"><div id='app-message-title-text'>${title}</div><div id="app-message-close"></div></div><div id="app-message-content">${message}</div>`;
+			appContent.appendChild(appMessage);
+			setTimeout(() => {
+				appMessageBack.style.opacity = 0.75;
+				appMessage.style.opacity = 1;
+				isFunction(callback) && callback();
+			}, 200);
+
+			document.getElementById('app-message-close').addEventListener('click', () => {
+				MESSAGE.hide();
+			});
+			document.getElementById('app-message-back').addEventListener('click', () => {
+				MESSAGE.hide();
+			});
+		}
+	},
+	confirm: function (title = '', message = '', confirmFunction = null) {
+		if (!isEmpty(message) && !isEmpty(confirmFunction)) {
+			message += "<div id='app-message-controls'><button id='app-message-confirm' class='app-button app-button-caution'>Yes</button><button id='app-message-cancel' class='app-button'>No</button></div>";
+			MESSAGE.show(title, message, '', () => {
+				const confirmButton = document.getElementById('app-message-confirm');
+				confirmButton.addEventListener('click', () => {
+					MESSAGE.hide();
+					confirmFunction();
+				});
+
+				const cancelButton = document.getElementById('app-message-cancel');
+				cancelButton.addEventListener('click', () => MESSAGE.hide());
+			});
+		}
+	},
+	error: function (message) {
+		MESSAGE.show('Error', message, 'app-message-caution');
+	},
+	hide: function () {
+		const appMessageBack = document.getElementById('app-message-back');
+		const appMessage = document.getElementById('app-message');
+
+		appMessageBack.style.opacity = 0;
+		appMessage.style.opacity = 0;
+		setTimeout(() => {
+			appMessageBack.remove();
+			appMessage.remove();
+		}, 1000);
 	},
 };
 
@@ -356,16 +434,53 @@ const LOG = {
 };
 
 // Functions
-function isEmpty(value) {
-	let varEmpty = false;
-	if (value === undefined || value === null || (typeof value === 'string' && value.trim() === '')) {
-		varEmpty = true;
-	} else if ((Array.isArray(value) && value.length === 0) || (typeof value === 'object' && Object.keys(value).length === 0)) {
-		varEmpty = true;
-	}
+const isEmpty = (value) => value === undefined || value === null || (typeof value === 'string' && value.trim() === '') || (Array.isArray(value) && value.length === 0) || (typeof value === 'object' && Object.keys(value).length === 0);
 
-	return varEmpty;
-}
+const isFunction = (variable) => typeof variable === 'function';
+
+const capitalizeFirst = (str) => str.charAt(0).toUpperCase() + str.slice(1);
+
+const getValue = (inputID) => {
+	if (!isEmpty(inputID)) {
+		const input = document.getElementById(inputID);
+		if (input && input.id == inputID && input.value) {
+			return input.value;
+		} else {
+			return '';
+		}
+	}
+	return '';
+};
+
+const formatDate = (variable = '', format = '') => {
+	if (isEmpty(variable)) return '';
+
+	const date = new Date(variable);
+	const monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+	const day = date.getDate();
+	const monthIndex = date.getMonth();
+	const year = date.getFullYear();
+
+	if (isEmpty(format)) {
+		return `${monthNames[monthIndex]} ${day}, ${year}`;
+	} else {
+		return format
+			.replace('YYYY', year)
+			.replace('MM', monthIndex + 1)
+			.replace('DD', day);
+	}
+};
+
+const formatTime = (variable = '') => {
+	if (isEmpty(variable)) return '';
+
+	const date = new Date(variable);
+	const hours = date.getHours();
+	const minutes = date.getMinutes();
+	const ampm = hours >= 12 ? 'PM' : 'AM';
+	const formattedHours = hours % 12 || 12;
+	return `${formattedHours}:${minutes < 10 ? '0' : ''}${minutes} ${ampm}`;
+};
 
 // Initialize PWA functionality
 document.addEventListener('DOMContentLoaded', () => {

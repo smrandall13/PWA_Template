@@ -1,12 +1,12 @@
 {
 	"name": "App Template",
 	"icon": "/icons/app-icon.png",
-	"version": "1.0.1",
+	"version": "1.0.2",
 	"defaultPage": "home",
 	"defaultTheme": "Dark",
 	"defaultFont": "Nunito",
 
-	"copyright": "&copy; 2025 Software Response",
+	"copyright": "&copy; 2025 Shaun Randall",
 
 	"displayMenu": true,
 	"displayHome": true,
