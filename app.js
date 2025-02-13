@@ -533,6 +533,7 @@ const formatDate = (variable = '', format = '') => {
 	const year = date.getFullYear();
 
 	if (isEmpty(format)) {
+		// Long
 		return `${monthNames[monthIndex]} ${day}, ${year}`;
 	} else {
 		return format
@@ -542,17 +543,30 @@ const formatDate = (variable = '', format = '') => {
 	}
 };
 
-const formatTime = (variable = '', showSeconds = false) => {
-	if (isEmpty(variable)) return '';
+const formatTime = (variable = '', format = '') => {
+	if (!variable) return ''; // Ensures variable is not empty or undefined
 
 	const date = new Date(variable);
+	if (isNaN(date.getTime())) return ''; // Handles invalid dates
+
 	const hours = date.getHours();
 	const minutes = date.getMinutes();
 	const seconds = date.getSeconds();
 	const ampm = hours >= 12 ? 'PM' : 'AM';
-	const formattedHours = hours % 12 || 12;
+	const hours12 = hours % 12 || 12;
 
-	return `${formattedHours}:${minutes < 10 ? '0' : ''}${minutes}${showSeconds ? `:${seconds < 10 ? '0' : ''}${seconds}` : ''} ${ampm}`;
+	// Ensure format is a string to prevent errors
+	format = String(format);
+
+	if (!format) {
+		return `${hours12}:${minutes.toString().padStart(2, '0')} ${ampm}`;
+	} else {
+		return format
+			.replace('HH', (format.includes('AMPM') ? hours12 : hours).toString().padStart(2, '0'))
+			.replace('mm', minutes.toString().padStart(2, '0'))
+			.replace('ss', seconds.toString().padStart(2, '0'))
+			.replace('AMPM', ampm);
+	}
 };
 
 // Initialize PWA functionality

@@ -1,19 +1,19 @@
 {
 	"name": "PWA Template",
 	"icon": "/icons/app-icon.png",
-	"version": "1.1.0",
+	"version": "1.1.1",
 	"defaultPage": "home",
 	"defaultTheme": "Dark",
 	"defaultFont": "Nunito",
 
 	"copyright": "&copy; 2025 Shaun Randall",
 
-	"displayMenu": false,
-	"displayHome": false,
-	"displaySettings": false,
+	"displayMenu": true,
+	"displayHome": true,
+	"displaySettings": true,
 
 	"allowInstall": true,
-	"allowNotifications": false,
+	"allowNotifications": true,
 
 	"pages": [
 		{
