@@ -1,6 +1,9 @@
 const appContent = document.getElementById('app-content');
 const APP = {
 	data: {},
+	timeouts: [],
+	intervals: [],
+	executions: [],
 	settings: { page: '', theme: '', font: '' },
 	page: {
 		current: '',
@@ -35,7 +38,6 @@ const APP = {
 			APP.page.reset();
 
 			if (!isEmpty(htmlPath)) {
-				console.log('P3', pageName, htmlPath);
 				const contentElement = document.getElementById('app-content-container');
 				try {
 					const response = await fetch(htmlPath);
@@ -100,69 +102,114 @@ const APP = {
 			const contentElement = document.getElementById('app-content-container');
 			if (contentElement) contentElement.innerHTML = '';
 
+			if (APP.executions && APP.executions.length && APP.executions.length > 0) {
+				APP.executions.forEach((execute, index) => {
+					if (isFunction(execute)) {
+						execute();
+					}
+					if (index == APP.executions.length - 1) {
+						APP.executions = [];
+					}
+				});
+			}
+
 			APP.page.current = '';
 		},
 	},
 	menu: {
 		toggle: function (menuState = 0) {
 			const menu = document.getElementById('app-menu');
-			const toggle = document.getElementById('app-menu-toggle');
-			const back = document.getElementById('app-menu-back');
 
-			if (menuState === 0) {
-				if (menu.classList.contains('app-menu-closed')) {
-					menuState = 1;
-				} else {
-					menuState = 2;
+			if (menu) {
+				const toggle = document.getElementById('app-menu-toggle');
+				const back = document.getElementById('app-menu-back');
+				if (menuState === 0) {
+					if (menu.classList.contains('app-menu-closed')) {
+						menuState = 1;
+					} else {
+						menuState = 2;
+					}
 				}
-			}
 
-			if (menuState === 1) {
-				menu.classList.remove('app-menu-closed');
-				toggle.classList.remove('app-menu-closed');
-				back.classList.remove('app-menu-closed');
-			} else {
-				menu.classList.add('app-menu-closed');
-				toggle.classList.add('app-menu-closed');
-				back.classList.add('app-menu-closed');
+				if (menuState === 1) {
+					menu.classList.remove('app-menu-closed');
+					toggle.classList.remove('app-menu-closed');
+					back.classList.remove('app-menu-closed');
+				} else {
+					menu.classList.add('app-menu-closed');
+					toggle.classList.add('app-menu-closed');
+					back.classList.add('app-menu-closed');
+				}
 			}
 		},
 		init: function () {
 			if (APP.data && APP.data.displayMenu === true) {
+				let menuBack = document.getElementById('app-menu-back');
+				if (!menuBack) {
+					menuBack = document.createElement('div');
+					menuBack.id = 'app-menu-back';
+					appContent.insertAdjacentElement('beforebegin', menuBack);
+				}
+
+				let menu = document.getElementById('app-menu');
+				if (!menu) {
+					menu = document.createElement('aside');
+					menu.id = 'app-menu';
+					menuBack.insertAdjacentElement('afterend', menu);
+				}
+
+				// Main Menu Content
+				let menuContent = `<h2 id="app-menu-header">Menu<div id="app-menu-toggle" class="menu-toggle"><div></div></div></h2><div id="app-menu-content">`;
+
 				// Home
 				if (APP.data.displayHome) {
-					document.getElementById('app-menu-home').classList.remove('app-hidden');
+					menuContent += `<div id="app-menu-home" class="app-menu-list">
+									<div id="page-home" class="app-menu-page active" onclick="APP.page.go('home')">
+										<div class="app-menu-page-icon app-icon-home"></div>
+										<div class="app-menu-page-title">Home</div>
+									</div>
+								</div>`;
 				}
 
-				// Settings
-				if (APP.data.displaySettings) {
-					document.getElementById('app-menu-settings').classList.remove('app-hidden');
-				}
-
+				menuContent += `<div id="app-page-list" class="app-menu-list">`;
 				// Pages
 				if (APP.data && APP.data.pages) {
-					let pageData = '';
 					APP.data.pages.forEach((page) => {
-						pageData += `<div id="page-${page.id}" class="app-menu-page" onclick="APP.page.go('${page.id}')">`;
+						let pageData = `<div id="page-${page.id}" class="app-menu-page" onclick="APP.page.go('${page.id}')">`;
 						if (!isEmpty(page.icon)) {
 							pageData += `<div class="app-menu-page-icon" style='background-image: url("${page.icon}")'></div>`;
 						}
 						pageData += `<div class="app-menu-page-title">${page.name}</div>`;
 						pageData += `</div>`;
-					});
 
-					const pageList = document.getElementById('app-page-list');
-					pageList.innerHTML = pageData;
+						menuContent += pageData;
+					});
 				}
+				menuContent += `</div>`;
+
+				// Settings
+				if (APP.data.displaySettings) {
+					menuContent += `<div id="app-menu-settings" class="app-menu-list">
+									<div id="page-settings" class="app-menu-page active" onclick="APP.page.go('settings')">
+										<div class="app-menu-page-icon app-icon-settings"></div>
+										<div class="app-menu-page-title">Settings</div>
+									</div>
+								</div>`;
+				}
+
+				// Copyright
+				if (!isEmpty(APP.data.copyright)) {
+					menuContent += `<div id="app-copyright">${APP.data.copyright}</div>`;
+				}
+
+				// Add Content To Menu
+				menu.innerHTML = menuContent + '</div>';
 
 				// Toggle
 				const toggleButton = document.getElementById('app-menu-toggle');
 				toggleButton.addEventListener('click', () => {
 					APP.menu.toggle();
 				});
-			} else {
-				document.getElementById('app-menu').classList.add('app-hidden');
-				document.getElementById('app-menu-back').classList.add('app-hidden');
 			}
 		},
 	},
@@ -265,6 +312,9 @@ const APP = {
 		location.reload();
 		navigator.serviceWorker.getRegistrations();
 	},
+	execute: function (callback) {
+		APP.executions.push(callback);
+	},
 	init: async function (callback) {
 		try {
 			// App Data (app.json)
@@ -298,13 +348,6 @@ const APP = {
 			document.getElementById('app-favicon').href = APP.data.icon;
 			document.getElementById('app-icon').src = APP.data.icon;
 
-			// Copywrite
-			if (!isEmpty(APP.data.copyright)) {
-				const copyright = document.getElementById('app-copyright');
-				copyright.innerHTML = APP.data.copyright;
-				copyright.classList.remove('app-hidden');
-			}
-
 			// Check Page
 			let pageName = STORAGE.get('app-page');
 			if (isEmpty(pageName)) {
@@ -320,8 +363,6 @@ const APP = {
 				pageName = APP.data.pages[0].id;
 			}
 
-			APP.page.go(pageName);
-
 			// Menu Initialize
 			APP.menu.init();
 
@@ -329,10 +370,37 @@ const APP = {
 			if (APP.data.allowInstall) {
 				APP.pwa.init();
 			}
+			APP.page.go(pageName);
 
 			callback();
 		} catch (error) {
 			LOG.error('Error loading HTML:' + error);
+		}
+	},
+};
+
+const NOTIFY = {
+	send: function (title = '', message = '') {
+		if (Notification.permission === 'granted') {
+			new Notification(title, { body: message });
+		} else if (Notification.permission !== 'denied') {
+			NOTIFY.init(() => {
+				NOTIFY.send(title, message);
+			});
+		}
+	},
+	init: function (callback) {
+		if ('Notification' in window && APP.data.allowNotifications === true) {
+			Notification.requestPermission().then((permission) => {
+				if (permission === 'granted') {
+					if (isFunction(callback)) callback();
+					LOG.message('Notification permission granted.');
+				} else {
+					LOG.message('Notification permission denied.');
+				}
+			});
+		} else {
+			LOG.message('Notifications are not supported in this browser.');
 		}
 	},
 };
@@ -393,6 +461,9 @@ const MESSAGE = {
 	},
 	error: function (message) {
 		MESSAGE.show('Error', message, 'app-message-caution');
+	},
+	alert: function (title, message) {
+		MESSAGE.show(title, message, 'app-message-caution');
 	},
 	hide: function () {
 		const appMessageBack = document.getElementById('app-message-back');
@@ -471,15 +542,17 @@ const formatDate = (variable = '', format = '') => {
 	}
 };
 
-const formatTime = (variable = '') => {
+const formatTime = (variable = '', showSeconds = false) => {
 	if (isEmpty(variable)) return '';
 
 	const date = new Date(variable);
 	const hours = date.getHours();
 	const minutes = date.getMinutes();
+	const seconds = date.getSeconds();
 	const ampm = hours >= 12 ? 'PM' : 'AM';
 	const formattedHours = hours % 12 || 12;
-	return `${formattedHours}:${minutes < 10 ? '0' : ''}${minutes} ${ampm}`;
+
+	return `${formattedHours}:${minutes < 10 ? '0' : ''}${minutes}${showSeconds ? `:${seconds < 10 ? '0' : ''}${seconds}` : ''} ${ampm}`;
 };
 
 // Initialize PWA functionality

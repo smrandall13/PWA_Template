@@ -7,7 +7,8 @@
 		<link id="app-favicon" rel="icon" href="icons/app-icon.png" />
 		<link rel="manifest" href="manifest.json" />
 		<link rel="stylesheet" href="app.css" />
-		<title id="app-title">PWA Template</title>
+		<title id="app-title"></title>
+		<script defer src="app.js"></script>
 	</head>
 	<body>
 		<div id="app-cover">
@@ -17,7 +18,7 @@
 		<header id="app-header">
 			<div id="app-info">
 				<img id="app-icon" src="icons/app-icon.png" alt="App Icon" />
-				<span id="app-name" class="app-name">My PWA</span>
+				<span id="app-name" class="app-name"></span>
 			</div>
 			<nav class="app-nav">
 				<!-- Optional Nav Items -->
@@ -28,35 +29,7 @@
 			</div>
 		</header>
 		<main class="app-container">
-			<div id="app-menu-back"></div>
-			<aside id="app-menu">
-				<h2 id="app-menu-header">
-					Menu
-					<div id="app-menu-toggle" class="menu-toggle"><div></div></div>
-				</h2>
-				<div id="app-menu-content">
-					<div id="app-menu-home" class="app-menu-list app-hidden">
-						<div id="page-home" class="app-menu-page active" onclick="APP.page.go('home')">
-							<div class="app-menu-page-icon app-icon-home"></div>
-							<div class="app-menu-page-title">Home</div>
-						</div>
-					</div>
-					<div id="app-page-list" class="app-menu-list">
-						<!-- Dynamically added saved content -->
-					</div>
-					<div id="app-menu-settings" class="app-menu-list app-hidden">
-						<div id="page-settings" class="app-menu-page" onclick="APP.page.go('settings')">
-							<div class="app-menu-page-icon app-icon-settings"></div>
-							<div class="app-menu-page-title">Settings</div>
-						</div>
-					</div>
-
-					<div id="app-copyright" class="app-hidden"></div>
-				</div>
-			</aside>
 			<section id="app-content"><div id="app-content-container"></div></section>
 		</main>
-
-		<script src="app.js"></script>
 	</body>
 </html>

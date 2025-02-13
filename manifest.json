@@ -1,7 +1,7 @@
 {
-	"name": "PWA Template",
-	"short_name": "PWA",
-	"description": "A simple Progressive Web App template.",
+	"name": "Up-Time",
+	"short_name": "Up-Time",
+	"description": "A simple Progressive Web App that check and logs a websites up-time.",
 	"start_url": "/index.html",
 	"display": "standalone",
 	"background_color": "#121c2d",
